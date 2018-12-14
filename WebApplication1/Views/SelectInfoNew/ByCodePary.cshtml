@@ -1,0 +1,102 @@
+﻿@model WebApplication1.Model.ByCodeModel
+@using WebApplication1.Model.Dto
+
+<head>
+    <link href="~/Content/ControlParts.css" rel="stylesheet" type="text/css" />
+</head>
+
+@{
+    Dictionary<string,string> dic=new Dictionary<string, string>();
+    dic.Add("RearAngle_BEV", "BEV后角");
+    dic.Add("RearAxle", "后桥-四线并两线");
+    dic.Add("RearAxle_BEV", "BEV后桥");
+    dic.Add("SubFram", "副车架-四线并两线");
+    dic.Add("Suspension_Lavida", "前悬 Lavida");
+    dic.Add("Suspension_PQ24", "前悬 PQ24(A0) ");
+    string title = dic[ViewBag.title.ToString()];
+}
+
+<h2>查询 @title 下部件</h2>
+
+<div style="height: 5%;width: 100%">.</div>
+@using (Ajax.BeginForm("ByCodePary", null, new AjaxOptions { HttpMethod = "Get", OnSuccess = "OnSuccess" }, new { @class = "form-horizontal no-margin form-border" }))
+{
+    @Html.AntiForgeryToken()
+   
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        总成条码：
+                @Html.TextBoxFor(model => model.BarCode, new { style = "width:270px;height:34px;margin-top:5px;border:1px solid #cccccc;" })
+                @Html.ValidationMessageFor(model => model.BarCode, "", new { @class = "text-danger" })
+        工位：
+                @Html.DropDownListFor(model => model.Station, (List<SelectListItem>)ViewBag.opxxSelect, new { @style = "width:270px;height:34px;margin-top:5px;border:1px solid #cccccc;" })
+                @Html.ValidationMessageFor(model => model.Station, "", new { @class = "text-danger" })
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <input type="submit" value="查询" class="btn btn-default" />
+        </div>
+
+        <div class="form-group">
+           
+            <div style="float:right;text-align:right;">
+                <input type="button" value="导出Execel" class="btn btn-default" onclick="javascrtpt:window.location.href='@Url.Content("~/ToExecel/ByCodeParyToExcel")'" />
+            </div>
+        </div>
+    
+
+}
+
+
+<style type="text/css">
+    /*div {
+        border-radius: 5px;
+        border: 1px;
+        padding: 10px;
+    }*/
+</style>
+
+<div style="width: 100%;margin:auto;height:500px;overflow-y: auto; background:#ede8e8" id="test">
+    <table class="ui-table" style="width: 100%;margin:auto" rules="all">
+
+        <tr class="ui-trcoloreven">
+            <td>列数</td>
+            <td>开始时间</td>
+            <td>总成条码</td>
+            <td>站点</td>
+
+            <td>部件条码</td>
+
+            <td>扫描状态</td>
+
+        </tr>
+        @if (ViewBag.table != null && ViewBag.table.Count > 0)
+        {
+            var i = 0;
+
+            <tr>
+                @foreach (var item in ViewBag.table as List<ByCodeDto>)
+                {
+
+                    i = i + 1;
+                <tr>
+                    <td>@i</td>
+                    <td>@item.ProdDateTime</td>
+                    <td>@item.BarCode_zc</td>
+                    <td>@item.Station</td>
+
+                    <td>@item.Barcode_part</td>
+
+                    <td>@item.ScanStatus</td>
+                    @*@ /*<td>@Html.ActionLink(item.BarCode, "DownloadPdf", new { BarcodeStr = item.BarCode.ToString(), Area = "fcj" })</td>*/*@
+                </tr>
+            }
+                </tr>
+            }
+
+    </table>
+
+</div>
+<div class="form-group">
+
+    <div class="control-label col-md-2">
+        共计： @Html.Encode(ViewBag.count) 条数据
+    </div>
+</div>

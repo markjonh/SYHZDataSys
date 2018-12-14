@@ -1,0 +1,62 @@
+﻿@using Zhongyu.Data.Extensions
+@model List<WebApplication1.Model.Dto.ResFunctionDto>
+<aside class="sidebar-menu fixed">
+    <div class="sidebar-inner scrollable-sidebar">
+        <div class="main-menu">
+            <ul class="accordion">
+                <li class="menu-header">Main Menu</li>
+                @{ int i = 1;}
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        if (!item.CheachAuth.IsNullOrEmpty() && !MenuHelper.CheckMenuPermisson(item.FunctionId))
+                        {
+                            continue;
+                        }
+                        if (item.SonFunction.Count() > 0)
+                        {
+                            <li class="openable bg-palette4">
+                                <a href="#">
+                                    <span class="menu-content block">
+                                        <span class="menu-icon"><i class="block fa @item.HtmlClass fa-lg"></i></span>
+                                        <span class="text m-left-sm"><font size="3">@item.Name</font></span>
+                                        <span class="submenu-icon"></span>
+                                    </span>
+                                    <span class="menu-content-hover block">
+                                        @item.Name
+                                    </span>
+                                </a>
+                                <ul class="submenu" style="display:none;">
+                                    @foreach (var son in item.SonFunction)
+                                    {
+                                        if (!son.CheckAuth.IsNullOrEmpty() && !MenuHelper.CheckMenuPermisson(son.SonFunctionId))
+                                        {
+                                            continue;
+                                        }
+                                        <li id="@son.HtmlId"><a href="@son.Url"><span class="submenu-label"><font size="3">@son.Name</font></span></a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="@("bg-palette"+i)" id="@item.HtmlId">
+                                <a href="@item.Url" target="@item.Target">
+                                    <span class="menu-content block">
+                                        <span class="menu-icon"><i class="block fa @item.HtmlClass fa-lg"></i></span>
+                                        <span class="text m-left-sm"><font size="3">@item.Name</font></span>
+                                    </span>
+                                    <span class="menu-content-hover block">@item.Name</span>
+                                </a>
+                            </li>
+                        }
+                        i++;
+                    }
+                }
+            </ul>
+        </div>
+
+    </div>
+    <!-- sidebar-inner -->
+</aside>

@@ -1,0 +1,117 @@
+﻿@model List<WebApplication1.Model.Dto.UsersDto>   
+<script>
+    $(function () {
+        $("#m_user").addClass("active");
+        $("#m_user").parent().show();
+        $("#m_user").parent().parent().addClass("open");
+    });
+    var load;
+    function OnSuccess(r) {
+        layer.close(load);
+        if (r.Successed) {
+            layer.alert('操作成功', { icon: 1 }, function () { window.location = window.location; });
+        }
+        else {
+            layer.alert(r.Message, { icon: 2 });
+        }
+    }
+    function deleteitem(id) {
+        layer.msg('确定删除吗？', {
+            time: 0, //不自动关闭
+            btn: ['删除', '取消'],
+            yes: function (index) {
+                layer.close(index);
+                load = layer.load(1, { shade: [0.3, '#ccc'] });
+                var url = "/UserManage/Delete";
+                $.ajax({ url: url, data: { id: id }, success: OnSuccess, type: "POST" });
+            }
+        });
+    }
+</script>
+<ul class="breadcrumb">
+    <li><span class="primary-font"><i class="icon-home"></i></span><a href="/Home/Index">首页</a></li>
+    <li>用户管理</li>
+</ul>
+
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        查询
+        <span class="smart-widget-option">
+            <span class="refresh-icon-animated">
+                <i class="fa fa-circle-o-notch fa-spin"></i>
+            </span>
+            <a href="#" class="widget-collapse-option" data-toggle="collapse">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+        </span>
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form id="formToggleLine" class="form-horizontal no-margin form-border" action="/UserManage/Index" method="get">
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">名称：</label>
+                    <div class="col-lg-10">
+                        <input type="text" class="form-control" placeholder="请输入用户名称" name="name" value="@ViewBag.name">
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <button type="submit" class="btn btn-danger" data-toggle="modal">查 询</button>
+                        <a href="/UserManage/Create" class="btn btn-info">新增</a>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /form-group -->
+            </form>
+        </div>
+    </div>
+    <!-- ./smart-widget-inner -->
+</div>
+
+<table class="table table-striped" id="dataTable">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>姓名</th>
+            <th>登录名</th>
+            <th>手机号</th>
+            <th>角色</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 1;}
+        @foreach (var item in Model as List<WebApplication1.Model.Dto.UsersDto>)
+        {
+            <tr>
+                <td>@i</td>
+                <td>@item.Name</td>
+                <td>@item.LoginName</td>
+                <td>@item.Phone</td>
+                <td>
+                    @if (item.Roles != null)
+                    {
+                        foreach (var role in item.Roles)
+                         {
+                             <label class="label-info">@role.Name</label>
+                         }
+                    }
+                    
+                </td>
+                <td>
+                    <a href="/UserManage/Edit/@item.Id">
+                        <i class="ion-edit"></i>
+                    </a>&nbsp;
+                    <a href="javascript:;" onclick="deleteitem('@item.Id')">
+                        <i class="ion-close"></i>
+                    </a>
+                </td>
+            </tr>
+            i++;
+        }
+
+    </tbody>
+</table>

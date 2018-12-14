@@ -1,0 +1,79 @@
+﻿@{
+    SigninUser u = UserHelper.GetSigninUser;
+}
+
+<header class="top-nav">
+    <div class="top-nav-inner">
+        <div class="nav-header" style="text-align:left">
+            <button type="button" class="navbar-toggle pull-left sidebar-toggle" id="sidebarToggleSM">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <ul class="nav-notification pull-right">
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog fa-lg"></i></a>
+                    <span class="badge badge-danger bounceIn">1</span>
+                    <ul class="dropdown-menu dropdown-sm pull-right">
+                        <li class="user-avatar">
+                            <img src="/Content/Simplify/images/profile/default.png" alt="" class="img-circle">
+                            <div class="user-content">
+                                <h5 class="no-m-bottom">@u.userName</h5>
+                                <div class="m-top-xs">
+                                    <a href="/ChangePassword/Index">修改密码</a>
+                                    <a href="/Sign/Out">退出</a>
+                                </div>
+                            </div>
+                        </li>
+
+
+                    </ul>
+                </li>
+            </ul>
+
+            <a href="/Home/Index" class="brand">
+                <i class="fa">
+                </i><span class="brand-name">沈阳汇众追溯系统</span>
+            </a>
+        </div>
+        <div class="nav-container">
+            <button type="button" class="navbar-toggle pull-left sidebar-toggle" id="sidebarToggleLG">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+
+            <div class="pull-right m-right-sm">
+                <div class="user-block hidden-xs">
+                    <a href="#" id="userToggle" data-toggle="dropdown">
+                        <img src="/Content/Simplify/images/profile/default.png" alt="" class="img-circle inline-block user-profile-pic">
+                        <div class="user-detail inline-block">
+                            @u.userName
+                            <i class="fa fa-angle-down"></i>
+                        </div>
+                    </a>
+                    <div class="panel border dropdown-menu user-panel">
+                        <div class="panel-body paddingTB-sm">
+                            <ul>
+                                <li>
+                                    <a href="/ChangePassword/Index">
+                                        <i class="fa fa-power-off fa-lg"></i><span class="m-left-xs">修改密码</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/Sign/Out">
+                                        <i class="fa fa-power-off fa-lg"></i><span class="m-left-xs">退出</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <ul class="nav-notification"></ul>
+            </div>
+        </div>
+    </div>
+
+</header>

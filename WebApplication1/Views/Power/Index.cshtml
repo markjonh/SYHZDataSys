@@ -1,0 +1,118 @@
+﻿@model List<WebApplication1.Model.Dto.FunctionSimpleInfo>
+<script>
+    $(function () {
+        $("#m_permission").addClass("active");
+        $("#m_permission").parent().show();
+        $("#m_permission").parent().parent().addClass("open");
+
+        $("#btn_cp").click(function () {
+            var length = $("input[name='role']:checkbox:checked").length;
+            if (length == 0) {
+                layer.alert('没有选择角色.', { icon: 2 });
+                return;
+            }
+
+            load = layer.load(1, { shade: [0.3, '#ccc'] });
+            $("form:first").submit();
+        });
+
+        $("input[name='role']").click(function () {
+            $("input[type='checkbox']").not(this).attr("checked", false);
+            if ($(this).is(':checked')) {
+                getData($(this).val());
+            }
+        });
+    });
+    var load;
+    function OnSuccess(r) {
+        layer.close(load);
+        if (r.Successed) {
+            layer.alert('操作成功', { icon: 1 }, function () { window.location = window.location; });
+        }
+        else {
+            layer.alert(r.Message, { icon: 2 });
+        }
+    }
+    function getData(rid) {
+        load = layer.load(1, { shade: [0.3, '#ccc'] });
+        $.ajax({
+            url: "@Url.Action("GetRolePermission")",
+            dataType: "json",
+            cache: false,
+            type: "POST",
+            data: { id: rid },
+            success: function (data) {
+                layer.close(load);
+                $.each(data.r, function (entryIndex, entry) {
+                    //$("#fun" + entry).attr("checked", true);
+                    $("#fun" + entry).click();
+                });
+            }
+        });
+    }
+</script>
+<ul class="breadcrumb">
+    <li><span class="primary-font"><i class="icon-home"></i></span><a href="/Home/Index">首页</a></li>
+    <li>权限管理</li>
+</ul>
+
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        权限管理
+    </div>
+    <div class="smart-widget-inner">
+
+        <div class="smart-widget-body">
+            @using (Ajax.BeginForm("SetPermission", null, new AjaxOptions { HttpMethod = "Post", OnSuccess = "OnSuccess" }, new { @class = "form-horizontal no-margin form-border" }))
+            {
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">角色：</label>
+                    <div class="col-lg-10">
+                        @foreach (var role in ViewBag.Role as List<WebApplication1.Model.Dto.RolesDto>)
+                        {
+                            <div class="checkbox inline-block">
+                                <div class="custom-checkbox">
+                                    <input type="checkbox" id="@role.Id" name="role" class="checkbox-purple" value="@role.Id">
+                                    <label for="@role.Id"></label>
+                                </div>
+                                <div class="inline-block vertical-top">
+                                    @role.Name
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">功能集合：</label>
+                    <div class="col-lg-10">
+                        @foreach (var item in Model)
+                        {
+                            <div class="checkbox">
+                                <div class="custom-checkbox">
+                                    <input type="checkbox" id="@("fun"+item.Id)" name="function" value="@item.Id">
+                                    <label for="@("fun"+item.Id)"></label>
+                                </div>
+                                <div class="inline-block vertical-top">
+                                    @item.Name @item.Content
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <button type="button" class="btn btn-danger" data-toggle="modal" id="btn_cp">保存权限设置 </button>
+
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /form-group -->
+            }
+        </div>
+    </div>
+    <!-- ./smart-widget-inner -->
+</div>
+

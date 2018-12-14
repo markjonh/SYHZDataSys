@@ -1,0 +1,207 @@
+﻿@using WebApplication1.Model
+@model WebApplication1.Model.AreaDto
+@{
+    var res1 = ViewBag.data1 ;
+    var res2 = ViewBag.data1 as ResChartDto;
+    var res3 = ViewBag.data1 as ResChartDto;
+    var res4 = ViewBag.data1 as ResChartDto;
+    var res6 = ViewBag.data1 as ResChartDto;
+    var res5 = ViewBag.data1 as ResChartDto;
+  
+}
+<head>
+    <link href="~/Content/ControlParts.css" rel="stylesheet" type="text/css"/>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+
+    <link href="~/Content/css/zxf_page.css" rel="stylesheet" />
+</head>
+
+<ul class="breadcrumb" style="border-radius:1px; background:#ffffff;bmoz-box-shadow:2px 2px 5px #333333 ; webkit-box-shadow:2px 2px 5px #333333; box-shadow:2px 2px 5px #333333; white-space:nowrap;text-overflow:ellipsis; ">
+    <li><span class="primary-font"><i class="icon-home"></i></span><a href="/Home/Index" style="color:#333333">首页</a></li>
+    @*<li style="color: #333333">零件查询</li>*@
+
+</ul>
+
+    <div id="container1" style="bmoz-box-shadow: 2px 2px 5px #333333;background: #ffffff; box-shadow: 2px 2px 5px #333333; margin: 0 auto; margin: 0 auto; webkit-box-shadow: 2px 2px 5px #333333; height: 200px"></div>
+    <br/>
+    <div id="container3" style="bmoz-box-shadow: 2px 2px 5px #333333; background: #ffffff; box-shadow: 2px 2px 5px #333333; margin: 0 auto; margin: 0 auto; webkit-box-shadow: 2px 2px 5px #333333; height: 200px"></div>
+    <br/>
+    <div id="container5" style="bmoz-box-shadow: 2px 2px 5px #333333; background: #ffffff; box-shadow: 2px 2px 5px #333333; margin: 0 auto; margin: 0 auto; webkit-box-shadow: 2px 2px 5px #333333; height: 200px"></div>
+    @*<br/>
+    <div id="container6" style="bmoz-box-shadow: 2px 2px 5px #333333; background: #ffffff; box-shadow: 2px 2px 5px #333333; margin: 0 auto; margin: 0 auto; webkit-box-shadow: 2px 2px 5px #333333; height: 200px"></div>*@
+<script src="~/Content/js/jquery.js"></script>
+<script src="~/Scripts/echarts .js"></script>
+<script type="text/javascript">
+    function chart(key, area, title, containername) {
+      
+      
+  
+        $.ajax({
+            url: "@Url.Content("~/ChartShow/JsonHome")",
+            data: {
+                DateTime:'',
+                QueryKind:key ,
+                Area: area
+            },
+            type: "Get",
+            success: function(res) {
+
+                console.log(res);
+                var data = [];
+
+                var app = {};
+                var dom = document.getElementById(containername);
+                var myChart = echarts.init(dom);
+                option = null;
+                var json = JSON.parse(res.data);
+                console.log(json);
+                $.each(json,
+                    function(index, item) {
+                        data.push({
+                            "Num": json[index].Num,
+                            "ChartDate": json[index].ChartDate,
+                            "Light": json[index].Light,
+                            "Hight": json[index].Hight
+                        });
+                    });
+
+                myChart.hideLoading();
+
+                var base = data.reduce(function(min, val) {
+                        return Math.floor(Math.min(min, val.Light));
+
+                    },
+                    Infinity);
+                //  var base = 0;
+                myChart.setOption(option = {
+                    title: {
+                        text: res.message,
+                        subtext: title + "实际产量曲线变化曲线",
+                        left: 'center'
+
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            animation: false,
+                            label: {
+                                backgroundColor: '#ccc',
+                                borderColor: '#aaa',
+                                borderWidth: 1,
+                                shadowBlur: 0,
+                                shadowOffsetX: 0,
+                                shadowOffsetY: 0,
+                                textStyle: {
+                                    color: '#222'
+                                }
+                            }
+                        },
+                        formatter: function(params) {
+                            return params[2].name + '<br />' + params[2].value;
+                        }
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: data.map(function(item) {
+                            return item.ChartDate;
+                        }),
+                        axisLabel: {
+                            formatter: function(Num, idx) {
+                                var date = new Date(Num);
+                                return idx === 0 ? Num : [date.getMonth() + 1, date.getDate()].join('-');
+                            }
+                        },
+                        splitLine: {
+                            show: false
+                        },
+                        boundaryGap: false
+                    },
+                    yAxis: {
+                        axisLabel: {
+                            formatter: function(val) {
+                                return (val);
+                            }
+                        },
+                        axisPointer: {
+                            label: {
+                                formatter: function(params) {
+                                    return (params.value).toFixed(1);
+                                }
+                            }
+                        },
+
+                        splitNumber: 3,
+                        splitLine: {
+                            show: false
+                        }
+                    },
+                    series: [
+                        {
+                            name: 'L',
+                            type: 'line',
+                            data: data.map(function(item) {
+                                return item.Light + base;
+                            }),
+                            lineStyle: {
+                                normal: {
+                                    opacity: 0
+                                }
+                            },
+                            stack: 'confidence-band',
+                            symbol: 'none'
+                        }, {
+                            name: 'U',
+                            type: 'line',
+                            data: data.map(function(item) {
+                                return item.Hight - item.Light;
+                            }),
+                            lineStyle: {
+                                normal: {
+                                    opacity: 0
+                                }
+                            },
+                            areaStyle: {
+                                normal: {
+                                    color: '#ccc'
+                                }
+                            },
+                            stack: 'confidence-band',
+                            symbol: 'none'
+                        }, {
+                            type: 'line',
+                            data: data.map(function(item) {
+                                return item.Num + base;
+                            }),
+                            hoverAnimation: false,
+                            symbolSize: 6,
+                            itemStyle: {
+                                normal: {
+                                    color: '#c23531'
+                                }
+                            },
+                            showSymbol: false
+                        }
+                    ]
+                });
+
+
+            }
+
+        });
+    }
+</script>
+<script>
+    $(function () {
+        chart(1, "SubFram", "GEM-副车架", "container1");
+        chart(1, "RearAxle", "GEM-后桥", "container3");
+        chart(1, "Suspension", "GEM-前悬", "container5");
+        //chart(1, "RearAngle", "GEM-后角", "container6");
+    });
+</script>

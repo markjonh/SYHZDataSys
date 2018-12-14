@@ -1,0 +1,122 @@
+﻿<script>
+    $(function () {
+        $("#m_user").addClass("active");
+        $("#m_user").parent().show();
+        $("#m_user").parent().parent().addClass("open");
+
+        $("#btn_cp").click(function () {
+            var Name = $.trim($("#Name").val());
+            if (Name == "") {
+                layer.alert('姓名不能为空.', { icon: 2 });
+                return;
+            }
+            var Phone = $.trim($("#Phone").val());
+            if (Phone == "") {
+                layer.alert('手机号不能为空.', { icon: 2 });
+                return;
+            }
+            var LoginName = $.trim($("#LoginName").val());
+            if (LoginName == "") {
+                layer.alert('系统登录名不能为空.', { icon: 2 });
+                return;
+            }
+            var Password = $.trim($("#Password").val());
+            if (Password == "") {
+                layer.alert('系统登录密码不能为空.', { icon: 2 });
+                return;
+            }
+
+            load = layer.load(1, { shade: [0.3, '#ccc'] });
+            $("form:first").submit();
+        });
+    });
+    var load;
+    function OnSuccess(r) {
+        layer.close(load);
+        if (r.Successed) {
+            layer.alert('操作成功', { icon: 1 }, function () { window.location = "/UserManage/Index"; });
+        }
+        else {
+            layer.alert(r.Message, { icon: 2 });
+        }
+    }
+</script>
+<ul class="breadcrumb">
+    <li><span class="primary-font"><i class="icon-home"></i></span><a href="/Home/Index">首页</a></li>
+    <li>用户管理</li>
+    <li>新增用户</li>
+</ul>
+
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        新增用户
+    </div>
+    <div class="smart-widget-inner">
+
+        <div class="smart-widget-body">
+            @using (Ajax.BeginForm("Create", null, new AjaxOptions { HttpMethod = "Post", OnSuccess = "OnSuccess" }, new { @class = "form-horizontal no-margin form-border" }))
+            {
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">用户姓名：</label>
+                    <div class="col-lg-10">
+                        <input type="text" maxlength="20" class="form-control" placeholder="请输入用户姓名" id="Name" name="Name">
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">手机号：</label>
+                    <div class="col-lg-10">
+                        <input type="number" maxlength="11" class="form-control" placeholder="请输入用户手机" id="Phone" name="Phone" value="">
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">系统登录名：</label>
+                    <div class="col-lg-10">
+                        <input type="text" maxlength="20" class="form-control" placeholder="请输入系统登录名" id="LoginName" name="LoginName">
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">系统登录密码：</label>
+                    <div class="col-lg-10">
+                        <input type="password" maxlength="50" class="form-control" placeholder="请输入系统登录密码" id="Password" name="Password" value="">
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">用户角色：</label>
+                    <div class="col-lg-10">
+                        @foreach (var role in ViewBag.Role as List<WebApplication1.Model.Dto.RolesDto>)
+                        {
+                            <div class="checkbox inline-block">
+                                <div class="custom-checkbox">
+                                    <input type="checkbox" id="@role.Id" name="role" class="checkbox-purple" value="@role.Id">
+                                    <label for="@role.Id"></label>
+                                </div>
+                                <div class="inline-block vertical-top">
+                                    @role.Name
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <button type="button" class="btn btn-danger" data-toggle="modal" id="btn_cp"> 新 增 </button>
+
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /form-group -->
+            }
+        </div>
+    </div>
+    <!-- ./smart-widget-inner -->
+</div>

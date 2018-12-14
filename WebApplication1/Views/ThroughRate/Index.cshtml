@@ -1,0 +1,643 @@
+﻿@using WebApplication1.Model
+@using WebApplication1.Model.Dto
+<style>
+    .divcss5-right {
+        border: 5px solid #DCDCDC;
+        float: right;
+        height: 150px;
+        width: 260px;
+        z-index: 100;
+    }
+    /* css注释：对divcss5-right设置float:right即可让对象靠右浮动 */
+</style>
+<link href="~/Content/ControlParts.css" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/jquery.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script src="~/Scripts/echarts.js"></script>
+<script src="~/My97DatePicker/WdatePicker.js"></script>
+
+<link href="~/Content/tt.css" rel="stylesheet" />
+
+
+<link href="~/Content/ControlParts.css" rel="stylesheet" type="text/css" />
+<script src="~/My97DatePicker/WdatePicker.js"></script>
+<link href="~/Content/page.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.min.js"></script>
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+
+<link href="~/Content/style.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+
+@*@{
+        var dic = new Dictionary<string, string>();
+        //dic.Add("RearAngle_BEV", "BEV后角");
+        dic.Add("RearAxle", "GEM-后桥");
+        //dic.Add("RearAxle_BEV", "BEV后桥");
+        dic.Add("SubFram", "GEM-副车架");
+        dic.Add("Suspension", "GEM-前悬");
+        //dic.Add("Suspension_PQ24", "前悬 PQ24(A0) ");
+
+        string title = dic[];
+    }*@
+<ul class="breadcrumb" style="background:#ffffff;bmoz-box-shadow:2px 2px 5px #333333 ; webkit-box-shadow:2px 2px 5px #333333; box-shadow:2px 2px 5px #333333; white-space:nowrap;text-overflow:ellipsis; ">
+    <li><span class="primary-font"><i class="icon-home"></i></span><a href="/Home/Index" style="color:#333333">首页</a></li>
+    <li style="color: #333333">图表查询</li>
+    <li style="color: #333333">直通率</li>
+
+</ul>
+
+
+
+
+
+<div class="search d1" style="background:#ffffff; float:left;bmoz-box-shadow:2px 2px 5px #333333 ; webkit-box-shadow:2px 2px 5px #333333; box-shadow:2px 2px 5px #333333; overflow:hidden;white-space:nowrap;text-overflow:ellipsis; width: 100%; ">
+    
+    &nbsp;&nbsp;     <font face=宋体 color=#333333> 时间</font>&nbsp;
+    <input type="text" id="starttime" name="code" placeholder="请选择开始时间..." style="width: 16%; height: 30px;" OnClick="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" , readonly="true" , class="datepicker" />
+    &nbsp;&nbsp;     <font face=宋体 color=#333333>  至</font>&nbsp;&nbsp;
+    <input type="text" id="endtime" name="code" placeholder="请选择结束时间..." size="10" style="width: 16%; height: 30px;" OnClick="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" , readonly="true" , class="datepicker" />
+
+    &nbsp;&nbsp; <font face=宋体 color=#333333> 线体</font>&nbsp;
+    <select type="text" id="line" name="code" placeholder="请选择线体..." style="width: 16%; height: 30px;
+    font-size:13px;
+    padding-left: 10px;
+    border: 2px solid #7BA7AB;
+    border-radius: 5px;
+    outline: none;
+    background: #F9F0DA;
+    color: #9E9C9C;" , readonly="true">
+        <option value="1" hidden size="5"> 请选择线体...</option>
+        @foreach (var item in ViewBag.Line as List<AreaDto>)
+        {
+            <option value="@item.Area">@item.DesCribe</option>
+        }
+    </select>
+
+
+    
+
+
+
+
+    <br>
+    <br>
+    &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;  <input id="submit" type="button" style="background:red;width: 8%; height: 3%; color: #ffffff" value="查询" onclick="chart()" />
+</div>
+<br />
+<br />
+<div style="width: 100%">.</div>
+<br />
+
+<div class="search d1" style="background:#ffffff; float: left;bmoz-box-shadow:2px 2px 5px #333333 ; webkit-box-shadow:2px 2px 5px #333333; box-shadow:2px 2px 5px #333333; overflow:hidden;white-space:nowrap;text-overflow:ellipsis; width: 100%;height: 380px">
+    <div id="container1" style="float: right;width: 60%;height:100%"></div>
+
+    <div id="container" style="width: 40%;height: 90%"></div>
+
+
+</div>
+
+
+
+<script>
+
+    function chart(){
+        var first = $("#starttime").val();
+        var line = $("#line").val();
+        var last = $("#endtime").val();
+        // alert(line);       
+        if (first !== null && first < last && first !== "" && last !== null && last !== "" && line !== null && line !== "" && line !== "1") {
+            load = layer.load(1, { shade: [0.3, '#ccc'] });
+           $.ajax({
+            url: "@Url.Content("~/ThroughRate/ThroughRate")",
+            data: {
+                StartTime: $("#starttime").val(),
+                EndTime: $("#endtime").val(),
+                Line: $("#line").val()
+            },
+            type: "Get",
+            success: function(res1) {
+                console.log("平均产量：" + res1.AverangeOutPut);
+                console.log("时间x：" + res1.datetimeX);
+                console.log("产量：" + res1.output);
+                var t = $("#output").val();
+                var dom1 = document.getElementById("container1");
+                var myChart3 = echarts.init(dom1);
+                var app1 = {};
+                option = null;
+                option = {
+                    title: {
+                        text: '直通率',
+                        subtext: '单工位'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        }
+                    },
+                    legend: {
+                        data: ["直通率", "扫描量"]
+                    },
+
+
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: { readOnly: false },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+
+
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 200
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            data: JSON.parse(res1.Station)
+
+                        },
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            data: (function() {
+                                var res = [];
+                                var len = 10;
+                                while (len--) {
+                                    res.push(10 - len - 1);
+                                }
+                                return res;
+                            })()
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            scale: true,
+                            name: '直通率',
+                            max: 100,
+                            min: 0,
+                            boundaryGap: [0.2, 0.2]
+                        },
+                        {
+                            type: 'value',
+                            scale: true,
+                            name: '产量',
+                            max: 10000,
+                            min: 0,
+                            boundaryGap: [0.2, 0.2]
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '扫描量',
+                            type: 'bar',
+                            xAxisIndex: 1,
+                            yAxisIndex: 1,
+                            data: JSON.parse(res1.OutPut) //(function () {
+                            //    var res = [];
+                            //    var len = 10;
+                            //    while (len--) {
+                            //        res.push(Math.round(Math.random() * 1000));
+                            //    }
+                            //    return res;
+                            //})()
+                        },
+                        {
+                            name: '直通率',
+                            type: 'line',
+                            data: JSON.parse(res1.StationThroughRate)
+                        }
+                    ]
+                };
+                app1.count = 11;
+                if (option && typeof option === "object") {
+                    myChart3.setOption(option, true);
+                }
+                var domt = document.getElementById("container");
+                var myChart = echarts.init(domt);
+                var appt = {};
+                option = null;
+                option = {
+                    title: {
+                        text: '直通率',
+                        subtext: '单线',
+                        x: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        data: ['直通率', '其他']
+                    },
+                    series: [
+                        {
+                            name: '比率',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['50%', '60%'],
+                            data: JSON.parse(res1.Data),
+                            itemStyle: {
+                                emphasis: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+                if (option && typeof option === "object") {
+                    myChart.setOption(option, true);
+
+                }
+                layer.close(load);
+            }
+           
+           
+        });
+        }
+        else {
+            layer.alert("参数错误！", { icon: 2 });
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @*function chart() {
+        var  load = layer.load(1, { shade: [0.3, '#ccc'] });
+        if (!$("#starttime").val() || !$("#endtime").val() || !$("#line").val()) {
+            alert("日期或线体没选！");
+            return;
+        }
+        $.ajax({
+            url: "@Url.Content("~/ThroughRate/ThroughRate")",
+            data: {
+                StartTime: $("#starttime").val(),
+                EndTime: $("#endtime").val(),
+                Line: $("#line").val()
+            },
+            type: "Get",
+            success: function(res1) {
+                console.log("平均产量：" + res1.AverangeOutPut);
+                console.log("时间x：" + res1.datetimeX);
+                console.log("产量：" + res1.output);
+                var t = $("#output").val();
+                var dom1 = document.getElementById("container1");
+                var myChart3 = echarts.init(dom1);
+                var app1 = {};
+                option = null;
+                option = {
+                    title: {
+                        text: '直通率',
+                        subtext: '真实数据'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        }
+                    },
+                    legend: {
+                        data: ["直通率", "扫描量"]
+                    },
+
+
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: { readOnly: false },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+
+
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 200
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            data: JSON.parse(res1.Station)
+
+                        },
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            data: (function() {
+                                var res = [];
+                                var len = 10;
+                                while (len--) {
+                                    res.push(10 - len - 1);
+                                }
+                                return res;
+                            })()
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            scale: true,
+                            name: '直通率',
+                            max: 100,
+                            min: 0,
+                            boundaryGap: [0.2, 0.2]
+                        },
+                        {
+                            type: 'value',
+                            scale: true,
+                            name: '产量',
+                            max: 10000,
+                            min: 0,
+                            boundaryGap: [0.2, 0.2]
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '扫描量',
+                            type: 'bar',
+                            xAxisIndex: 1,
+                            yAxisIndex: 1,
+                            data: JSON.parse(res1.OutPut) //(function () {
+                            //    var res = [];
+                            //    var len = 10;
+                            //    while (len--) {
+                            //        res.push(Math.round(Math.random() * 1000));
+                            //    }
+                            //    return res;
+                            //})()
+                        },
+                        {
+                            name: '直通率',
+                            type: 'line',
+                            data: JSON.parse(res1.StationThroughRate)
+                        }
+                    ]
+                };
+                app1.count = 11;
+                if (option && typeof option === "object") {
+                    myChart3.setOption(option, true);
+                }
+                var domt = document.getElementById("container");
+                var myChart = echarts.init(domt);
+                var appt = {};
+                option = null;
+                option = {
+                    title: {
+                        text: '直通率',
+                        subtext: '真实数据',
+                        x: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        data: ['直通率', '其他']
+                    },
+                    series: [
+                        {
+                            name: '比率',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['50%', '60%'],
+                            data: JSON.parse(res1.Data),
+                            itemStyle: {
+                                emphasis: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+                if (option && typeof option === "object") {
+                    myChart.setOption(option, true);
+
+                }
+                layer.close(load);
+            }
+           
+           
+        });
+    }*@
+</script>
+
+
+
+
+
+<script type="text/javascript">
+
+    var domt = document.getElementById("container");
+    var myChart = echarts.init(domt);
+    var appt = {};
+    option = null;
+    option = {
+        title : {
+            text: '默认直通率',
+            subtext: '单线',
+            x:'center'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: ['直通率','其他']
+        },
+        series : [
+            {
+                name: '比率',
+                type: 'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data:[
+                    {value:80, name:'直通率'},
+                    {value:20, name:'其他'}
+                 
+                ],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+
+
+
+    var dom = document.getElementById("container1");
+    var myChart3 = echarts.init(dom);
+    var app = {};
+    option = null;
+    option = {
+        title: {
+            text: '默认直通率',
+            subtext: '单工位'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#283b56'
+                }
+            }
+        },
+        legend: {
+            data: ['直通率', '扫描量']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataView: { readOnly: false },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        dataZoom: {
+            show: false,
+            start: 0,
+            end: 100
+        },
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: true,
+                data:   (function () {
+                    var now = new Date();
+                    var res = [];
+                    var len = 10;
+                    while (len--) {
+                        res.unshift(now.toLocaleTimeString().replace(/^\D*/, ''));
+                        now = new Date(now - 2000);
+                    }
+                    return res;
+                })()
+            },
+            {
+                type: 'category',
+                boundaryGap: true,
+                data: (function () {
+                    var res = [];
+                    var len = 10;
+                    while (len--) {
+                        res.push(10 - len - 1);
+                    }
+                    return res;
+                })()
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                scale: true,
+                name: '直通率',
+                max: 30,
+                min: 0,
+                boundaryGap: [0.2, 0.2]
+            },
+            {
+                type: 'value',
+                scale: true,
+                name: '扫描量',
+                max: 1200,
+                min: 0,
+                boundaryGap: [0.2, 0.2]
+            }
+        ],
+        series: [
+            {
+                name: '直通率',
+                type: 'bar',
+                xAxisIndex: 1,
+                yAxisIndex: 1,
+                data: (function () {
+                    var res = [];
+                    var len = 10;
+                    while (len--) {
+                        res.push(Math.round(Math.random() * 1000));
+                    }
+                    return res;
+                })()
+            },
+            {
+                name: '扫描量',
+                type: 'line',
+                data: (function () {
+                    var res = [];
+                    var len = 0;
+                    while (len < 10) {
+                        res.push((Math.random() * 10 + 5).toFixed(1) - 0);
+                        len++;
+                    }
+                    return res;
+                })()
+            }
+        ]
+    };
+    app.count = 11;
+
+    if (option && typeof option === "object") {
+        myChart3.setOption(option, true);
+    }
+</script>
+
+

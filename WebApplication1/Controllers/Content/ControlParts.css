@@ -1,0 +1,216 @@
+﻿.form-horizontal .form-group1 {
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.form-horizontal .form-group1:before,
+.form-horizontal .form-group1:after {
+  display: table;
+  content: " ";
+}
+
+.form-horizontal .form-group1:after {
+  clear: both;
+}
+
+.form-group1 {
+    display: inline-block;
+    margin-bottom: 15px;
+    vertical-align: middle;
+    width: 800px;
+}
+
+.navbar-form .form-control1 {
+    display: inline-block;
+  }
+
+.form-control1:-moz-placeholder {
+  color: #999999;
+}
+
+.form-control1::-moz-placeholder {
+  color: #999999;
+}
+
+.form-control1:-ms-input-placeholder {
+  color: #999999;
+}
+
+.form-control1::-webkit-input-placeholder {
+  color: #999999;
+}
+
+.form-control1 {
+  display: block;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  color: #555555;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+          transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+
+.form-control1:focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+.form-control1[disabled],
+.form-control1[readonly],
+fieldset[disabled] .form-control1 {
+  cursor: not-allowed;
+  background-color: #eeeeee;
+}
+
+textarea.form-control1 {
+  height: auto;
+}
+
+
+/* ordered list */
+ol.round {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+    ol.round li {
+        margin: 25px 0;
+        padding-left: 150px;
+
+
+    }
+
+        ol.round li.zero {
+            background: url("../Images/orderedList0.png") no-repeat;
+        }
+
+        ol.round li.one {
+            background: url("../Images/orderedList数据查询.png") no-repeat;
+        }
+
+        ol.round li.two {
+            background: url("../Images/orderedList部件.png") no-repeat;
+        }
+
+        ol.round li.three {
+            background: url("../Images/orderedList部件反查.png") no-repeat;
+        }
+
+        ol.round li.four {
+            background: url("../Images/orderedListQC.png") no-repeat;
+        }
+
+        ol.round li.five {
+            background: url("../Images/orderedList图表.png") no-repeat;
+        }
+
+        ol.round li.six {
+            background: url("../Images/orderedList6.png") no-repeat;
+        }
+
+        ol.round li.seven {
+            background: url("../Images/orderedList7.png") no-repeat;
+        }
+
+        ol.round li.eight {
+            background: url("../Images/orderedList8.png") no-repeat;
+        }
+
+        ol.round li.nine {
+            background: url("../Images/orderedList9.png") no-repeat;
+        }
+
+.ui-dtbutton {
+    color: #999999;
+    width:111px;
+	display: inline-block;
+	position: relative;
+	padding: 0;
+	line-height: normal;
+	margin-right: .1em;
+	cursor: pointer;
+	vertical-align: middle;
+	text-align: center;
+	overflow: visible; /* removes extra width in IE */
+}
+
+.ui-dtbuttonbarcode {
+    width:263px;
+    height:23px;
+	display: inline-block;
+	position: relative;
+	padding: 0;
+	line-height: normal;
+	margin-left:0px;
+	cursor: pointer;
+	vertical-align: middle;
+	text-align: center;
+	overflow: visible;  /*removes extra width in IE */
+}
+
+.ui-dtbutton,
+.ui-dtbutton:link,
+.ui-dtbutton:visited,
+.ui-dtbutton:hover,
+.ui-dtbutton:active {
+	text-decoration: none;
+}
+ /*no icon support for input elements, provide padding by default*/ 
+input.ui-dtbutton{
+	padding: .4em 1em;
+}
+
+input.ui-dtbuttonbarcode{
+	padding: .4em 1em;
+}
+
+/* button sets */
+.ui-dtbuttonset {
+	margin-right: 7px;
+}
+.ui-dtbuttonset .ui-dtbutton {
+	margin-left: 0;
+	margin-right: -.3em;
+}
+
+#QurreyButton {
+    height:40px;
+    width:150px; 
+    margin-top:25px;
+    margin-left:60px;
+}
+
+#QurreyButtonMid {
+    height:40px;
+    width:150px; 
+    margin-top:25px;
+    margin-left:700px;
+    
+}
+
+.ui-table{
+    width:1366px;
+    border:solid;
+    border-color:black;
+    border-width:2px;
+    text-align:center;
+    margin:auto;
+}
+
+.ui-trcolorodd{
+    background-color:goldenrod;
+}
+
+.ui-trcoloreven{
+   background-color:greenyellow;
+}
+ 

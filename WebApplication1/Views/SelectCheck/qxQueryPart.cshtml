@@ -1,0 +1,164 @@
+﻿@model WebApplication1.Models.SelectCheckModels
+
+
+<head>
+    <link href="~/Content/ControlParts.css" rel="stylesheet" type="text/css" />
+</head>
+
+@{
+    ViewBag.Title = "前悬部件查询";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>请根据需求填写查询条件.</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EndDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.opxx, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.opxx, (List<SelectListItem>)ViewBag.opxxSelect, new { @style = "width:270px;height:34px;margin-top:5px;border:1px solid #cccccc;" })
+                @Html.ValidationMessageFor(model => model.opxx, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BarCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BarCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BarCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CountPerPage, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CountPerPage, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CountPerPage, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CurrentPage, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CurrentPage, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CurrentPage, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+           <label class = "control-label col-md-2" >总条目</label>
+            <div class = "control-label col-md-2" >
+                共计： @Html.Encode(ViewBag.TotleCount) 条数据
+            </div>
+            </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="查询" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<table class="ui-table">
+    @{
+        System.Data.DataTable dt = ViewBag.dt;
+        if (dt.Rows.Count > 0)
+        {
+        <tr class="ui-trcoloreven">
+            <td>序号</td>
+            <td>ID</td>
+            <td>时间日期</td>
+            <td>总成条码</td>
+            <td>部件条码</td>
+            <td>部件名称</td>
+            <td>夹具</td>
+            <td>工位号</td>
+            <td>车型</td>
+            <td>合格</td>
+        </tr>
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                if (i % 2 == 0)
+                {
+                <tr class="ui-trcolorodd">
+                    @{
+                        for (int j = 0; j < dt.Columns.Count; j++)
+                        {
+                            if (dt.Rows[i][j] != null)
+                            {
+                                if (j != 3)
+                                {
+                                    <td>@dt.Rows[i][j]</td>
+                                }
+                                else
+                                {
+                                    <td>@Html.ActionLink(dt.Rows[i][j].ToString(), "DownloadPdf", new { BarcodeStr = dt.Rows[i][j].ToString(), Area = "qx" })</td>
+                                }
+                            }
+                            else
+                            {
+                                <td>&nbsp;</td>
+                            }
+                        }
+                    }
+                </tr>
+                        }
+                        else
+                        {
+                            <tr class="ui-trcoloreven">
+                                @{
+                                    for (int j = 0; j < dt.Columns.Count; j++)
+                                    {
+                                        if (dt.Rows[i][j] != null)
+                                        {
+                                            if (j != 3)
+                                            {
+                                                <td>@dt.Rows[i][j]</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@Html.ActionLink(dt.Rows[i][j].ToString(), "DownloadPdf", new { BarcodeStr = dt.Rows[i][j].ToString(), Area = "qx" })</td>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <td>&nbsp;</td>
+                                        }
+                                    }
+                                }
+                            </tr>
+                                        }
+                                    } 
+                                        }
+                                    }
+
+</table>

@@ -1,0 +1,380 @@
+﻿@model WebApplication1.Model.ByDataModel
+@using System.Web.Services.Description
+@using WebApplication1.Model
+@using WebApplication1.Model.Dto
+
+<head>
+    <link href="~/Content/ControlParts.css" rel="stylesheet" type="text/css" />
+    <script src="~/My97DatePicker/WdatePicker.js"></script>
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <link href="~/Content/style.css" rel="stylesheet" />
+    <link href="~/Content/demo.css" rel="stylesheet" />
+    <style type="text/css">
+        .select {
+            display: inline-block;
+            line-height: 15px;
+            position: relative;
+            vertical-align: middle;
+            padding: 0;
+            overflow: hidden;
+            /*background-color:royalblue;*/
+            /*color: #555;*/
+            border: 1px solid #aaa;
+            text-shadow: none;
+            border-radius: 4px;
+            /*transition: box-shadow 0.25s ease;
+            z-index: 2;*/
+        }
+
+            .select:hover {
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            }
+
+            .select select {
+                background: royalblue;
+                cursor: pointer;
+                padding: 10px;
+                text-align: center;
+                border: none;
+                background: transparent;
+                background-image: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+            }
+
+                .select select:focus {
+                    outline: none;
+                }
+        .tftable {
+            font-size: 12px;
+            color: #333333;
+            width: 100%;
+            border-width: 1px;
+            border-color: #729ea5;
+            border-collapse: collapse;
+        }
+
+            .tftable th {
+                font-size: 12px;
+                background-color: #acc8cc;
+                border-width: 1px;
+                padding: 8px;
+                border-style: solid;
+                border-color: #729ea5;
+                text-align: left;
+            }
+
+            .tftable tr {
+                background-color: #d4e3e5;
+            }
+
+            .tftable td {
+                font-size: 12px;
+                border-width: 1px;
+                padding: 8px;
+                border-style: solid;
+                border-color: #729ea5;
+            }
+
+            .tftable tr:hover {
+                background-color: #ffffff;
+            }
+    </style>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/css/zxf_page.css" rel="stylesheet" />
+</head>
+@*<script type="text/javascript">
+
+    function ToExcel() {
+
+
+
+        if ($('#ExPd option:selected').val() === "ToExcelPart") {
+            window.open("../ToExecel/TorqPartToExcelAll?type=Part", 'top');
+
+        }
+        if ($('#ExPd  option:selected').val() === "ToExcelTorq") {
+            window.open("../ToExecel/TorqPartToExcelAll?type=Torq", 'top');
+
+        }
+    }
+</script>*@
+
+
+
+
+
+
+
+    @*<div style="margin: auto;width:100%">
+            <h2 style="text-align: center; color: #333333" font color="black">总成查询</h2>
+        </div>*@
+    <ul class="breadcrumb" style="border-radius:1px; background:#ffffff;bmoz-box-shadow:2px 2px 5px #333333 ; webkit-box-shadow:2px 2px 5px #333333; box-shadow:2px 2px 5px #333333; white-space:nowrap;text-overflow:ellipsis; ">
+        <li><span class="primary-font"><i class="icon-home"></i></span><a href="/Home/Index" style="color:#333333">首页</a></li>
+        <li style="color: #333333">需求押车</li>
+      
+    </ul>
+
+
+
+
+
+    <div class="search d1" style="background:#ffffff;float: left;bmoz-box-shadow:2px 2px 5px #333333 ; webkit-box-shadow:2px 2px 5px #333333; box-shadow:2px 2px 5px #333333; overflow:hidden;white-space:nowrap;text-overflow:ellipsis; width: 100%; ">
+
+
+        &nbsp;&nbsp;     <font face=宋体 color=#333333> 时间</font>&nbsp;
+        <input type="text" id="starttime" name="code" placeholder="请选择开始时间..." style="width: 16%; height: 30px;"  class="datepicker"     OnClick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss'})", readonly="true" />
+        &nbsp;&nbsp;     <font face=宋体 color=#333333>  至</font>&nbsp;&nbsp;
+        <input type="text" id="endtime" name="code" placeholder="请选择结束时间..." size="10" style="width: 16%; height: 30px;" OnClick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss'})" , readonly="true", class="datepicker"  />
+
+        &nbsp;&nbsp; <font face=宋体 color=#333333> 线体</font>&nbsp;
+        <select type="text" id="line" name="code" placeholder="请选择线体..." style="width: 16%; height: 30px;
+    font-size:13px;
+    padding-left: 10px;
+    border: 2px solid #7BA7AB;
+    border-radius: 5px;
+    outline: none;
+    background: #F9F0DA;
+    color: #9E9C9C;" , readonly="true">
+
+            <option value="1" hidden size="5"> 请选择线体...</option>
+            @foreach (var item in ViewBag.Line as List<AreaDto>)
+            {
+                <option value="@item.Area">@item.DesCribe</option>
+            }
+        </select>
+
+        <br>
+        <br>
+        &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;  <input id="submit" type="button" style="border: none;  background:red;width: 9%; height: 28px; color: #ffffff" value="查询" onclick="danji()" />
+      
+    </div>
+    <div style="height: 1%;width: 100%">.</div>
+
+     
+<div style="background:#ffffff;height: 100%">
+ 
+        <table @*class="tftable"*@ class="table table-striped" style="border:none;width: 100%;">
+            <tr>
+                <th style="text-align:center;" colspan="3">今日需求</th>
+               
+
+
+            </tr>
+            <tr>
+                <th style="text-align:center;">列数</th>
+                <th style="text-align:center;">图号</th>
+                <th style="text-align:center;">数量</th>
+
+
+            </tr>
+            <tbody id="table2">
+
+
+                @for (int i = 0; i < 10; i++)
+                {
+                    <tr>
+                        <td style="height: 40px"></td>
+                        <td style="height: 40px"></td>
+                        <td style="height: 40px"></td>
+
+                    </tr>
+                }
+
+
+            </tbody>
+
+        </table>
+ 
+       
+
+        <table @*class="tftable"*@ class="table table-striped"  style="border:none;width: 100%;float: right;">
+            <tr>
+                <th style="text-align:center;" colspan="3">今日押车</th>
+               
+
+
+            </tr>
+            <tr>
+                <th style="text-align:center;">列数</th>
+                <th style="text-align:center;">图号</th>
+                <th style="text-align:center;">数量</th>
+
+
+            </tr>
+            <tbody id="table1">
+              
+
+            @for (int i = 0; i < 10; i++)
+            {
+                <tr>
+                    <td style="height: 40px"></td>
+                    <td style="height: 40px"></td>
+                    <td style="height: 40px"></td>
+
+                </tr>
+            }
+                
+
+            </tbody>
+
+        </table>
+
+    </div>
+  
+
+
+
+
+
+<script type="text/javascript">
+    //function danji() {
+    //    var first = $("#starttime").val();
+    //    var last = $("#endtime").val();
+    //    var line = $("#line").val();
+
+    //    if (first === "" || first === null || first === undefined || last === "" || last === null || last === undefined) {
+    //        alert("请检擦总成条码和线体!");
+    //        return false;
+    //    } else {
+
+    //        $.ajax({
+
+    //            url: "../NeedDeleyCar/NeedDeley",
+    //            data: {
+    //                EndTime:  $("#endtime").val(),
+    //                Line: $("#line").val(), 
+    //                StartTime: $("#starttime").val(),
+
+
+    //            },
+    //            type: "Get",
+    //            success: function (res) {
+    //                console.log(res);
+    //                $("#table2").html("");
+    //                $("#table1").html("");
+    //                console.log(res);
+    //                $.each(res.ListNeed,
+    //                    function (n, value) {
+    //                        n = n + 1;
+    //                        var str = "<tr>";
+    //                        str += "<td style='text-align: center'>" + n + "</td>";
+    //                        str += "<td style='text-align: center'>" + value.figure_no + "</td>";
+    //                        str += "<td style='text-align: center'>" + value.SUM+ "</td>";
+    //                        str += "</tr>";
+    //                        $("#table2").append(str);
+    //                    });
+    //                $.each(res.ListDeley,
+    //                    function (n, value) {
+    //                        n = n + 1;
+    //                        var str1 = "<tr>";
+    //                        str1 += "<td style='text-align: center'>" + n + "</td>";
+    //                        str1 += "<td style='text-align: center'>" + value.figure_no + "</td>";
+    //                        str1 += "<td style='text-align: center'>" + value.SUM+ "</td>";
+    //                        str1 += "</tr >";
+
+    //                        $("#table1").append(str1);
+    //                    });
+    //            }
+    //        });
+
+    //    }
+
+    //}
+
+
+    function danji() {
+        var first = $("#starttime").val();
+        var line = $("#line").val();
+        var last = $("#endtime").val();
+
+        if (first !== null &&
+            first < last &&
+            first !== "" &&
+            last !== null &&
+            last !== "" &&
+            line !== null &&
+            line !== "" &&
+            line !== "1") {
+            load = layer.load(1, { shade: [0.3, '#ccc'] });
+            $.ajax({
+                url: "../NeedDeleyCar/NeedDeley",
+                data: {
+                    EndTime: $("#endtime").val(),
+                    Line: $("#line").val(),
+                    StartTime: $("#starttime").val()
+                },
+                type: "Get",
+                success: function(res) {
+                    if (res.Success) {
+                        layer.close(load);
+                        console.log(res);
+                        $("#table2").html("");
+                        $("#table1").html("");
+                        console.log(res);
+                        $.each(res.listnd.ListNeed,
+                            function(n, value) {
+                                n = n + 1;
+                                var str = "<tr>";
+                                str += "<td style='text-align: center'>" + n + "</td>";
+                                str += "<td style='text-align: center'>" + value.figure_no + "</td>";
+                                str += "<td style='text-align: center'>" + value.SUM + "</td>";
+                                str += "</tr>";
+                                $("#table2").append(str);
+                            });
+                        $.each(res.listnd.ListDeley,
+                            function(n, value) {
+                                n = n + 1;
+                                var str1 = "<tr>";
+                                str1 += "<td style='text-align: center'>" + n + "</td>";
+                                str1 += "<td style='text-align: center'>" + value.figure_no + "</td>";
+                                str1 += "<td style='text-align: center'>" + value.SUM + "</td>";
+                                str1 += "</tr >";
+
+                                $("#table1").append(str1);
+                            });
+
+                    } else {
+                        layer.msg("没有匹配的数据！", { icon: 5 });
+                        for (var i = 0; i < 5; i++) {
+                            var str2 = "<tr>";
+                            str2 += "<td align='center' style='height: 40px'></td>";
+                            str2 += "<td align='center' style='height: 40px'></td>";
+                            str2 += "<td align='center' style='height: 40px'></td>";
+
+                            str2 += "<tr>";
+                            $("#table2").append(str2);
+                            $("#table1").append(str2);
+                            layer.close(load);
+                        }
+                    }
+                }
+
+
+            });
+        } else {
+            layer.close(load);
+
+            $("#table2").html("");
+            $("#table1").html("");
+            for (var i = 0; i < 5; i++) {
+                var str4 = "<tr>";
+                str4 += "<td align='center' style='height: 40px'></td>";
+                str4 += "<td align='center' style='height: 40px'></td>";
+                str4 += "<td align='center' style='height: 40px'></td>";
+
+                str4 += "<tr>";
+                $("#table2").append(str4);
+                $("#table1").append(str4);
+
+            }
+            layer.alert("参数错误！", { icon: 2 });
+
+        }
+
+    }
+</script>
+
+<script type="text/javascript" src="~/Scripts/page.js"></script>
+

@@ -1,0 +1,1069 @@
+﻿@using WebApplication1.Model
+@using WebApplication1.Model.Dto
+<style>
+    .divcss5-right {
+        border: 5px solid #DCDCDC;
+        float: right;
+        height: 150px;
+        width: 260px;
+        z-index: 100;
+    }
+    /* css注释：对divcss5-right设置float:right即可让对象靠右浮动 */
+</style>
+<link href="~/Content/ControlParts.css" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/jquery.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script src="~/Scripts/echarts.js"></script>
+<script src="~/My97DatePicker/WdatePicker.js"></script>
+
+<link href="~/Content/tt.css" rel="stylesheet" />
+
+
+<link href="~/Content/ControlParts.css" rel="stylesheet" type="text/css" />
+<script src="~/My97DatePicker/WdatePicker.js"></script>
+<link href="~/Content/page.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.min.js"></script>
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+
+<link href="~/Content/style.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+
+@*@{
+    var dic = new Dictionary<string, string>();
+    //dic.Add("RearAngle_BEV", "BEV后角");
+    dic.Add("RearAxle", "GEM-后桥");
+    //dic.Add("RearAxle_BEV", "BEV后桥");
+    dic.Add("SubFram", "GEM-副车架");
+    dic.Add("Suspension", "GEM-前悬");
+    //dic.Add("Suspension_PQ24", "前悬 PQ24(A0) ");
+
+    string title = dic[];
+}*@
+<ul class="breadcrumb" style="background:#ffffff;bmoz-box-shadow:2px 2px 5px #333333 ; webkit-box-shadow:2px 2px 5px #333333; box-shadow:2px 2px 5px #333333; white-space:nowrap;text-overflow:ellipsis; ">
+    <li><span class="primary-font"><i class="icon-home"></i></span><a href="/Home/Index" style="color:#333333">首页</a></li>
+    <li style="color: #333333">图表查询</li>
+    <li style="color: #333333">产量节拍</li>
+</ul>
+
+
+
+
+
+<div class="search d1" style="background:#ffffff; float:left;bmoz-box-shadow:2px 2px 5px #333333 ; webkit-box-shadow:2px 2px 5px #333333; box-shadow:2px 2px 5px #333333; overflow:hidden;white-space:nowrap;text-overflow:ellipsis; width: 100%; ">
+
+
+    &nbsp;&nbsp;     <font face=宋体 color=#333333> 时间</font>&nbsp;
+    <input type="text" id="starttime" name="code" placeholder="请选择开始时间..." style="width: 16%; height: 30px;" OnClick="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" , readonly="true" , class="datepicker" />
+ 
+    &nbsp;&nbsp; <font face=宋体 color=#333333> 线体</font>&nbsp;
+    <select type="text" id="line" name="code" placeholder="请选择线体..." style="width: 16%; height: 30px;
+    font-size:13px;
+    padding-left: 10px;
+    border: 2px solid #7BA7AB;
+    border-radius: 5px;
+    outline: none;
+    background: #F9F0DA;
+    color: #9E9C9C;" , readonly="true">
+        <option value="1" hidden size="5"> 请选择线体...</option>
+        @foreach (var item in     ViewBag.Line as List<AreaDto>)
+        {
+            <option value="@item.Area">@item.DesCribe</option>
+        }
+    </select>
+    
+
+    &nbsp;&nbsp; <font face=宋体 color=#333333> 产量变化</font>&nbsp;
+                 <select type="text" id="output" name="code" placeholder="请选择类别..." style="width: 16%; height: 30px;
+    font-size:13px;
+    padding-left: 10px;
+    border: 2px solid #7BA7AB;
+    border-radius: 5px;
+    outline: none;
+    background: #F9F0DA;
+    color: #9E9C9C;" , readonly="true">
+                     <option hidden value="5" size="5"> 请选择类别...</option>
+                     <option value="1" size="5"> 月产量变化</option>
+                     <option value="2" size="5"> 年产量变化</option>
+                     <option value="3" size="5"> 日产量变化</option>
+                 </select>
+    
+    
+
+ 
+
+    <br>
+    <br>
+    &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;  <input id="submit" type="button" style="background:red;width: 8%; height: 3%; color: #ffffff" value="查询" onclick="chart()" />
+</div>
+<br />
+<br />
+<div style="width: 100%">.</div>
+<br />
+
+<div class="search d1" style="background:#ffffff; float: left;bmoz-box-shadow:2px 2px 5px #333333 ; webkit-box-shadow:2px 2px 5px #333333; box-shadow:2px 2px 5px #333333; overflow:hidden;white-space:nowrap;text-overflow:ellipsis; width: 100%;height: 380px">
+    <div id="container1" style="float: right;width: 50%;height:100%"></div>
+   
+    <div id="conter" style="width: 50%;height: 90%"></div>
+
+</div>
+
+
+
+
+
+@*<div>
+        <div class="divcss5-right" style="float: right;">
+            <br />
+
+            &nbsp;&nbsp; 时&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;间&nbsp;&nbsp;：<input name="text" id="time" type="text" style="width:45%;border: 0; border-bottom: solid black;background: #F7F7F7; " OnClick="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" , class="datepicker" />
+            <br />
+            <br />
+            &nbsp;&nbsp; 线&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;体&nbsp;&nbsp;：<select type="text" name="country" id="country" list="country_list" style="width:45%;border: 0; background:#F7F7F7; border-bottom: solid black;">
+
+                <option value="1">查询本月数据</option>
+                <option value="2">查本年度数据</option>
+
+            </select>
+            <br />
+            <br />
+            &nbsp;&nbsp; 查询类型&nbsp;&nbsp;：<select type="text" name="country" id="country" list="country_list" style="width:45%;border: 0; background:#F7F7F7; border-bottom: solid black;">
+
+                <option value="1">查询本月数据</option>
+                <option value="2">查本年度数据</option>
+
+            </select>
+            <br />
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a onclick="chart()" class="button button-rounded button-tiny" Num="">查询</a>
+        </div>
+        <br/>
+
+    </div>*@
+
+
+<script>
+    var app2 = {}; //var dom =
+    var dom2 = document.getElementById("conter");
+
+    var myChart = echarts.init(dom2);
+    option = null;
+    myChart.showLoading();
+    //数据
+
+    var data = [
+        {
+            "Num": 0,
+            "ChartDate": "2012-08-29",
+            "Light": 0,
+            "Hight": 1
+        },
+        {
+            "Num": 0,
+            "ChartDate": "2012-08-29",
+            "Light": 0,
+            "Hight": 1
+        },
+        {
+            "Num": 0,
+            "ChartDate": "2012-08-30",
+            "Light": 0.1,
+            "Hight": 0.8
+        },
+        {
+            "Num": 0,
+            "ChartDate": "2012-08-31",
+            "Light": 0,
+            "Hight": 0.7
+        }
+    ];
+    myChart.hideLoading();
+    var base = data.reduce(function(min, val) {
+            return Math.floor(Math.min(min, val.Light));
+        },
+        Infinity);
+    myChart.setOption(option = {
+        title: {
+            text: "@ViewBag.title",
+            subtext: " 线体默认曲线",
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                animation: false,
+                label: {
+                    backgroundColor: '#ccc',
+                    borderColor: '#aaa',
+                    borderWidth: 1,
+                    shadowBlur: 0,
+                    shadowOffsetX: 0,
+                    shadowOffsetY: 0,
+                    textStyle: {
+                        color: '#222'
+                    }
+                }
+            },
+            formatter: function(params) {
+                return params[2].name + '<br />' + params[2].Num;
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            data: data.map(function(item) {
+                return item.ChartDate;
+            }),
+            axisLabel: {
+                formatter: function(Num, idx) {
+                    var date = new Date(Num);
+                    return idx === 0 ? Num : [date.getMonth() + 1, date.getDate()].join('-');
+                }
+            },
+            splitLine: {
+                show: false
+            },
+            boundaryGap: false
+        },
+        yAxis: {
+            axisLabel: {
+                formatter: function(val) {
+                    return (val);
+                }
+            },
+
+            splitNumber: 3,
+            splitLine: {
+                show: false
+            }
+        },
+        series: [
+            {
+                name: 'L',
+                type: 'line',
+                data: data.map(function(item) {
+                    return item.Light + base;
+                }),
+                lineStyle: {
+                    normal: {
+                        opacity: 0
+                    }
+                },
+                stack: 'confidence-band',
+                symbol: 'none'
+            }, {
+                name: 'U',
+                type: 'line',
+                data: data.map(function(item) {
+                    return item.Hight - item.Light;
+                }),
+                lineStyle: {
+                    normal: {
+                        opacity: 0
+                    }
+                },
+                areaStyle: {
+                    normal: {
+                        color: '#ccc'
+                    }
+                },
+                stack: 'confidence-band',
+                symbol: 'none'
+            }, {
+                type: 'line',
+                data: data.map(function(item) {
+                    return item.Num + base;
+                }),
+                hoverAnimation: false,
+                symbolSize: 6,
+                itemStyle: {
+                    normal: {
+                        color: '#c23531'
+                    }
+                },
+                showSymbol: false
+            }
+        ]
+    });
+
+
+</script>
+
+<script>
+     function chart(){
+         var first = $("#starttime").val();
+
+        var line = $("#line").val();
+         var last = $("#output").val();
+        // alert(line);       
+        if (first !== null && first !== "" && last !== null && last !== "" && line !== null && line !== "" && last !== "5") {
+            load = layer.load(1, { shade: [0.3, '#ccc'] });
+              $.ajax({
+            url: "@Url.Content("~/ChartShow/Json")",
+            data: {
+                DateTime: $("#starttime").val(),
+                QueryKind: $("#output").val(),
+                Area: $("#line").val()
+            },
+            type: "Get",
+            success: function(res1) {
+                console.log("平均产量：" + res1.AverangeOutPut);
+                console.log("时间x：" + res1.datetimeX);
+                console.log("产量：" + res1.output);
+                var t = $("#output").val();
+                
+                if (t === "3") {
+                
+                    var dom1 = document.getElementById("container1");
+                    var myChart3 = echarts.init(dom1);
+                    var app1 = {};
+                    option = null;
+                    option = {
+                        title: {
+                            text: '产量节拍',
+                            subtext: '真实'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'cross',
+                                label: {
+                                    backgroundColor: '#283b56'
+                                }
+                            }
+                        },
+                        legend: {
+                            data: ['平均数','产量']
+                        },
+
+
+                        toolbox: {
+                            show: true,
+                            feature: {
+                                dataView: { readOnly: false },
+                                restore: {},
+                                saveAsImage: {}
+                            }
+                        },
+
+
+
+                        dataZoom: {
+                            show: false,
+                            start: 0,
+                            end: 200
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                boundaryGap: true,
+                                data: JSON.parse(res1.datetimeX)
+                                //(function () {
+                                //    var now = new Date();
+                                //    var res = [];
+                                //    var len = 10;
+                                //    while (len--) {
+                                //        res.unshift(now.toLocaleTimeString().replace(/^\D*/, ''));
+                                //        now = new Date(now - 2000);
+                                //    }
+                                //    return res;
+                                //})()
+                            },
+                            {
+                                type: 'category',
+                                boundaryGap: true,
+                                data: (function () {
+                                    var res = [];
+                                    var len = 24;
+                                    while (len--) {
+                                        res.push(24 - len);
+                                    }
+                                    return res;
+                                })()
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value',
+                                scale: true,
+                                name: '平均数',
+                                max: 200,
+                                min: 0,
+                                boundaryGap: [0.2, 0.2]
+                            },
+                            {
+                                type: 'value',
+                                scale: true,
+                                name: '产量',
+                                max: 200,
+                                min: 0,
+                                boundaryGap: [0.2, 0.2]
+                            }
+                        ],
+                        series: [
+                            {
+                                name: '产量',
+                                type: 'bar',
+                                xAxisIndex: 1,
+                                yAxisIndex: 1,
+                                data: JSON.parse(res1.output) //(function () {
+                                //    var res = [];
+                                //    var len = 10;
+                                //    while (len--) {
+                                //        res.push(Math.round(Math.random() * 1000));
+                                //    }
+                                //    return res;
+                                //})()
+                            },
+                            {
+                                name: '平均数',
+                                type: 'line',
+                                data: (function () {
+                                    var res = [];
+                                    var len = 1;
+                                    while (len <25) {
+                                        res.push(res1.AverangeOutPut);
+                                        len++;
+                                    }
+                                    return res;
+                                })()
+                            }
+                        ]
+                    };
+                    app1.count = 11;
+                    //setInterval(function () {
+                    //    axisData = (new Date()).toLocaleTimeString().replace(/^\D*/, '');
+                    //    var data0 = option.series[0].data;
+                    //    var data1 = option.series[1].data;
+                    //    data0.shift();
+                    //    data0.push(Math.round(Math.random() * 1000));
+                    //    data1.shift();
+                    //    data1.push((Math.random() * 10 + 5).toFixed(1) - 0);
+                    //    option.xAxis[0].data.shift();
+                    //    option.xAxis[0].data.push(axisData);
+                    //    option.xAxis[1].data.shift();
+                    //    option.xAxis[1].data.push(app1.count++);
+                    //    myChart3.setOption(option);
+                    //}, 2100);
+
+                    if (option && typeof option === "object") {
+                        myChart3.setOption(option, true);
+                    }
+                
+                }
+                else {
+                    //  console.log(res);
+                    var data = [];
+                    var app = {};
+                    var doma = document.getElementById("conter");
+                    var myChartc = echarts.init(doma);
+                    option = null;
+                    var json = JSON.parse(res1.data);
+                    // debugger
+                    $.each(json,function(index, item) {
+                        data.push({
+                            "Num": json[index].Num,
+                            "ChartDate": json[index].ChartDate,
+                            "Light": json[index].Light,
+                            "Hight": json[index].Hight
+                        });
+                    });
+                    myChartc.hideLoading();
+                    var base = data.reduce(function(min, val) {
+                            return Math.floor(Math.min(min, val.Light));
+                        },
+                        Infinity);
+                    //  var base = 0;  
+                    myChartc.setOption(option = {
+                        title: {
+                            text: res1.message,
+                            subtext: res1.message1+" 实际产量曲线变化曲线",
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'cross',
+                                animation: false,
+                                label: {
+                                    backgroundColor: '#ccc',
+                                    borderColor: '#aaa',
+                                    borderWidth: 1,
+                                    shadowBlur: 0,
+                                    shadowOffsetX: 0,
+                                    shadowOffsetY: 0,
+                                    textStyle: {
+                                        color: '#222'
+                                    }
+                                }
+                            },
+                            formatter: function(params) {
+                                return params[2].name + '<br />' + params[2].value;
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: data.map(function(item) {
+                                return item.ChartDate;
+                            }),
+                            axisLabel: {
+                                formatter: function(Num, idx) {
+                                    var date = new Date(Num);
+                                    return idx === 0 ? Num : [date.getMonth() + 1, date.getDate()].join('-');
+                                }
+                            },
+                            splitLine: {
+                                show: false
+                            },
+                            boundaryGap: false
+                        },
+                        yAxis: {
+                            axisLabel: {
+                                formatter: function(val) {
+                                    return (val);
+                                }
+                            },
+                            axisPointer: {
+                                label: {
+                                    formatter: function(params) {
+                                        return (params.value).toFixed(1);
+                                    }
+                                }
+                            },
+
+                            splitNumber: 3,
+                            splitLine: {
+                                show: false
+                            }
+                        },
+                        series: [
+                            {
+                                name: 'L',
+                                type: 'line',
+                                data: data.map(function(item) {
+                                    return item.Light + base;
+                                }),
+                                lineStyle: {
+                                    normal: {
+                                        opacity: 0
+                                    }
+                                },
+                                stack: 'confidence-band',
+                                symbol: 'none'
+                            }, {
+                                name: 'U',
+                                type: 'line',
+                                data: data.map(function(item) {
+                                    return item.Hight - item.Light;
+                                }),
+                                lineStyle: {
+                                    normal: {
+                                        opacity: 0
+                                    }
+                                },
+                                areaStyle: {
+                                    normal: {
+                                        color: '#ccc'
+                                    }
+                                },
+                                stack: 'confidence-band',
+                                symbol: 'none'
+                            }, {
+                                type: 'line',
+                                data: data.map(function(item) {
+                                    return item.Num + base;
+                                }),
+                                hoverAnimation: false,
+                                symbolSize: 6,
+                                itemStyle: {
+                                    normal: {
+                                        color: '#c23531'
+                                    }
+                                },
+                                showSymbol: false
+                            }
+                        ]
+                    });
+
+
+                }
+              
+                layer.close(load);
+
+            }
+           
+        });
+        }
+        else {
+            layer.alert("参数错误！", { icon: 2 });
+        }
+
+    }
+
+
+
+
+
+    @*function chart() {
+        var load = layer.load(1, { shade: [0.3, '#ccc'] });
+        if (!$("#starttime").val() || !$("#line").val()) {
+
+            alert("日期或线体没选！");
+            return;
+        }
+        $.ajax({
+            url: "@Url.Content("~/ChartShow/Json")",
+            data: {
+                DateTime: $("#starttime").val(),
+                QueryKind: $("#output").val(),
+                Area: $("#line").val()
+            },
+            type: "Get",
+            success: function(res1) {
+                console.log("平均产量：" + res1.AverangeOutPut);
+                console.log("时间x：" + res1.datetimeX);
+                console.log("产量：" + res1.output);
+                var t = $("#output").val();
+                
+                if (t === "3") {
+                
+                    var dom1 = document.getElementById("container1");
+                    var myChart3 = echarts.init(dom1);
+                    var app1 = {};
+                    option = null;
+                    option = {
+                        title: {
+                            text: '产量节拍',
+                            subtext: '真实'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'cross',
+                                label: {
+                                    backgroundColor: '#283b56'
+                                }
+                            }
+                        },
+                        legend: {
+                            data: ['平均数','产量']
+                        },
+
+
+                        toolbox: {
+                            show: true,
+                            feature: {
+                                dataView: { readOnly: false },
+                                restore: {},
+                                saveAsImage: {}
+                            }
+                        },
+
+
+
+                        dataZoom: {
+                            show: false,
+                            start: 0,
+                            end: 200
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                boundaryGap: true,
+                                data: JSON.parse(res1.datetimeX)
+                                //(function () {
+                                //    var now = new Date();
+                                //    var res = [];
+                                //    var len = 10;
+                                //    while (len--) {
+                                //        res.unshift(now.toLocaleTimeString().replace(/^\D*/, ''));
+                                //        now = new Date(now - 2000);
+                                //    }
+                                //    return res;
+                                //})()
+                            },
+                            {
+                                type: 'category',
+                                boundaryGap: true,
+                                data: (function () {
+                                    var res = [];
+                                    var len = 24;
+                                    while (len--) {
+                                        res.push(24 - len);
+                                    }
+                                    return res;
+                                })()
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value',
+                                scale: true,
+                                name: '平均数',
+                                max: 200,
+                                min: 0,
+                                boundaryGap: [0.2, 0.2]
+                            },
+                            {
+                                type: 'value',
+                                scale: true,
+                                name: '产量',
+                                max: 200,
+                                min: 0,
+                                boundaryGap: [0.2, 0.2]
+                            }
+                        ],
+                        series: [
+                            {
+                                name: '产量',
+                                type: 'bar',
+                                xAxisIndex: 1,
+                                yAxisIndex: 1,
+                                data: JSON.parse(res1.output) //(function () {
+                                //    var res = [];
+                                //    var len = 10;
+                                //    while (len--) {
+                                //        res.push(Math.round(Math.random() * 1000));
+                                //    }
+                                //    return res;
+                                //})()
+                            },
+                            {
+                                name: '平均数',
+                                type: 'line',
+                                data: (function () {
+                                    var res = [];
+                                    var len = 1;
+                                    while (len <25) {
+                                        res.push(res1.AverangeOutPut);
+                                        len++;
+                                    }
+                                    return res;
+                                })()
+                            }
+                        ]
+                    };
+                    app1.count = 11;
+                    //setInterval(function () {
+                    //    axisData = (new Date()).toLocaleTimeString().replace(/^\D*/, '');
+                    //    var data0 = option.series[0].data;
+                    //    var data1 = option.series[1].data;
+                    //    data0.shift();
+                    //    data0.push(Math.round(Math.random() * 1000));
+                    //    data1.shift();
+                    //    data1.push((Math.random() * 10 + 5).toFixed(1) - 0);
+                    //    option.xAxis[0].data.shift();
+                    //    option.xAxis[0].data.push(axisData);
+                    //    option.xAxis[1].data.shift();
+                    //    option.xAxis[1].data.push(app1.count++);
+                    //    myChart3.setOption(option);
+                    //}, 2100);
+
+                    if (option && typeof option === "object") {
+                        myChart3.setOption(option, true);
+                    }
+                
+                }
+                else {
+                    //  console.log(res);
+                    var data = [];
+                    var app = {};
+                    var doma = document.getElementById("conter");
+                    var myChartc = echarts.init(doma);
+                    option = null;
+                    var json = JSON.parse(res1.data);
+                    // debugger
+                    $.each(json,function(index, item) {
+                        data.push({
+                            "Num": json[index].Num,
+                            "ChartDate": json[index].ChartDate,
+                            "Light": json[index].Light,
+                            "Hight": json[index].Hight
+                        });
+                    });
+                    myChartc.hideLoading();
+                    var base = data.reduce(function(min, val) {
+                            return Math.floor(Math.min(min, val.Light));
+                        },
+                        Infinity);
+                    //  var base = 0;  
+                    myChartc.setOption(option = {
+                        title: {
+                            text: res1.message,
+                            subtext: res1.message1+" 实际产量曲线变化曲线",
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'cross',
+                                animation: false,
+                                label: {
+                                    backgroundColor: '#ccc',
+                                    borderColor: '#aaa',
+                                    borderWidth: 1,
+                                    shadowBlur: 0,
+                                    shadowOffsetX: 0,
+                                    shadowOffsetY: 0,
+                                    textStyle: {
+                                        color: '#222'
+                                    }
+                                }
+                            },
+                            formatter: function(params) {
+                                return params[2].name + '<br />' + params[2].value;
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: data.map(function(item) {
+                                return item.ChartDate;
+                            }),
+                            axisLabel: {
+                                formatter: function(Num, idx) {
+                                    var date = new Date(Num);
+                                    return idx === 0 ? Num : [date.getMonth() + 1, date.getDate()].join('-');
+                                }
+                            },
+                            splitLine: {
+                                show: false
+                            },
+                            boundaryGap: false
+                        },
+                        yAxis: {
+                            axisLabel: {
+                                formatter: function(val) {
+                                    return (val);
+                                }
+                            },
+                            axisPointer: {
+                                label: {
+                                    formatter: function(params) {
+                                        return (params.value).toFixed(1);
+                                    }
+                                }
+                            },
+
+                            splitNumber: 3,
+                            splitLine: {
+                                show: false
+                            }
+                        },
+                        series: [
+                            {
+                                name: 'L',
+                                type: 'line',
+                                data: data.map(function(item) {
+                                    return item.Light + base;
+                                }),
+                                lineStyle: {
+                                    normal: {
+                                        opacity: 0
+                                    }
+                                },
+                                stack: 'confidence-band',
+                                symbol: 'none'
+                            }, {
+                                name: 'U',
+                                type: 'line',
+                                data: data.map(function(item) {
+                                    return item.Hight - item.Light;
+                                }),
+                                lineStyle: {
+                                    normal: {
+                                        opacity: 0
+                                    }
+                                },
+                                areaStyle: {
+                                    normal: {
+                                        color: '#ccc'
+                                    }
+                                },
+                                stack: 'confidence-band',
+                                symbol: 'none'
+                            }, {
+                                type: 'line',
+                                data: data.map(function(item) {
+                                    return item.Num + base;
+                                }),
+                                hoverAnimation: false,
+                                symbolSize: 6,
+                                itemStyle: {
+                                    normal: {
+                                        color: '#c23531'
+                                    }
+                                },
+                                showSymbol: false
+                            }
+                        ]
+                    });
+
+
+                }
+              
+                layer.close(load);
+
+            }
+
+        });
+    }*@
+</script>
+
+
+
+
+
+<script type="text/javascript">
+
+
+
+    var dom = document.getElementById("container1");
+    var myChart3 = echarts.init(dom);
+    var app = {};
+    option = null;
+    option = {
+        title: {
+            text: '默认节拍',
+            subtext: '纯属虚构'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#283b56'
+                }
+            }
+        },
+        legend: {
+            data: ['平均产量', '每小时产量']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataView: { readOnly: false },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        dataZoom: {
+            show: false,
+            start: 0,
+            end: 100
+        },
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: true,
+                data:   (function () {
+                    var now = new Date();
+                    var res = [];
+                    var len = 10;
+                    while (len--) {
+                        res.unshift(now.toLocaleTimeString().replace(/^\D*/, ''));
+                        now = new Date(now - 2000);
+                    }
+                    return res;
+                })()
+            },
+            {
+                type: 'category',
+                boundaryGap: true,
+                data: (function () {
+                    var res = [];
+                    var len = 10;
+                    while (len--) {
+                        res.push(10 - len - 1);
+                    }
+                    return res;
+                })()
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                scale: true,
+                name: '平均产量',
+                max: 30,
+                min: 0,
+                boundaryGap: [0.2, 0.2]
+            },
+            {
+                type: 'value',
+                scale: true,
+                name: '产量',
+                max: 1200,
+                min: 0,
+                boundaryGap: [0.2, 0.2]
+            }
+        ],
+        series: [
+            {
+                name: '每小时产量',
+                type: 'bar',
+                xAxisIndex: 1,
+                yAxisIndex: 1,
+                data: (function () {
+                    var res = [];
+                    var len = 10;
+                    while (len--) {
+                        res.push(Math.round(Math.random() * 1000));
+                    }
+                    return res;
+                })()
+            },
+            {
+                name: '平均产量',
+                type: 'line',
+                data: (function () {
+                    var res = [];
+                    var len = 0;
+                    while (len < 10) {
+                        res.push((Math.random() * 10 + 5).toFixed(1) - 0);
+                        len++;
+                    }
+                    return res;
+                })()
+            }
+        ]
+    };
+    app.count = 24;
+    //setInterval(function () {
+    //    axisData = (new Date()).toLocaleTimeString().replace(/^\D*/, '');
+    //    var data0 = option.series[0].data;
+    //    var data1 = option.series[1].data;
+    //    data0.shift();
+    //    data0.push(Math.round(Math.random() * 1000));
+    //    data1.shift();
+    //    data1.push((Math.random() * 10 + 5).toFixed(1) - 0);
+    //    option.xAxis[0].data.shift();
+    //    option.xAxis[0].data.push(axisData);
+    //    option.xAxis[1].data.shift();
+    //    option.xAxis[1].data.push(app.count++);
+    //    myChart3.setOption(option);
+    //}, 2100);
+
+    if (option && typeof option === "object") {
+        myChart3.setOption(option, true);
+    }
+</script>

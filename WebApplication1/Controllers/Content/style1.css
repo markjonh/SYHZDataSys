@@ -1,0 +1,66 @@
+/* demo page styles */
+
+
+
+/* main menu styles */
+#nav,#nav ul {
+	font-family:verdana;
+	list-style:none;
+	margin:0;
+	padding:0;
+	position:relative;
+}
+
+#nav li {
+	float:left;
+	position:relative;
+	z-index:10;
+}
+    #nav li a {
+        background: dodgerblue;
+        color: #fff;
+        display: block;
+        float: left;
+        font-size: 14px;
+        height: 51px;
+        line-height: 40px;
+        padding: 0 10px;
+        position: relative;
+        text-decoration: none;
+        z-index: 20;
+    }
+    #nav li:first-child a {
+        background: dodgerblue;
+        padding-left: 35px;
+    }
+#nav li ul li:first-child a {
+	background-image:none;
+	padding-left:10px;
+}
+    #nav li.pad {
+        background: dodgerblue;
+        display: block;
+        height: 51px;
+        width: 35px;
+    }
+
+#nav ul li {
+	width:260px;
+}
+#nav ul li a {
+	background:transparent;
+	height:20px;
+	line-height:20px;
+	width:160px;
+}
+#nav:hover {
+	height:200px;
+}
+#nav li:hover ul {
+	-moz-transform:translate(0,161px); /*some css3*/
+	-o-transform:translate(0,161px);
+	-webkit-transform:translate(0,161px);
+}
+#nav a:hover,#nav li:hover > a {
+	color:#99ff33;
+}

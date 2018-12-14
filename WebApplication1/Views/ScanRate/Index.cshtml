@@ -1,0 +1,412 @@
+﻿@model WebApplication1.Model.ByDataModel
+@using System.Web.Services.Description
+@using WebApplication1.Model
+@using WebApplication1.Model.Dto
+
+<head>
+    <link href="~/Content/ControlParts.css" rel="stylesheet" type="text/css" />
+    <script src="~/My97DatePicker/WdatePicker.js"></script>
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <link href="~/Content/style.css" rel="stylesheet" />
+    <link href="~/Content/demo.css" rel="stylesheet" />
+    @*<link href="~/Content/font-awesome.min.css" rel="stylesheet" />*@
+    @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+    @*<link href="~/Content/normalize.css" rel="stylesheet" />*@
+    <style type="text/css">
+
+
+
+        .select {
+            display: inline-block;
+            line-height: 15px;
+            position: relative;
+            vertical-align: middle;
+            padding: 0;
+            overflow: hidden;
+            /*background-color:royalblue;*/
+            /*color: #555;*/
+            border: 1px solid #aaa;
+            text-shadow: none;
+            border-radius: 4px;
+            /*transition: box-shadow 0.25s ease;
+            z-index: 2;*/
+        }
+
+            .select:hover {
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            }
+
+            .select select {
+                background: royalblue;
+                cursor: pointer;
+                padding: 10px;
+                text-align: center;
+                border: none;
+                background: transparent;
+                background-image: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+            }
+
+                .select select:focus {
+                    outline: none;
+                }
+
+
+        .tftable {
+            font-size: 12px;
+            color: #333333;
+            width: 100%;
+            border-width: 1px;
+            border-color: #729ea5;
+            border-collapse: collapse;
+        }
+
+            .tftable th {
+                font-size: 12px;
+                background-color: #acc8cc;
+                border-width: 1px;
+                padding: 8px;
+                border-style: solid;
+                border-color: #729ea5;
+                text-align: left;
+            }
+
+            .tftable tr {
+                background-color: #d4e3e5;
+            }
+
+            .tftable td {
+                font-size: 12px;
+                border-width: 1px;
+                padding: 8px;
+                border-style: solid;
+                border-color: #729ea5;
+            }
+
+            .tftable tr:hover {
+                background-color: #ffffff;
+            }
+    </style>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/css/zxf_page.css" rel="stylesheet" />
+</head>
+
+<script type="text/javascript">
+
+    //function ToExcel() {
+       
+    //}
+
+    function ToExcel() {
+        var line= GetQueryString("Line")
+        var first=  GetQueryString("StartTime")
+        var end= GetQueryString("EndTime")   
+        if (first < end && line != null && first != undefined && end != undefined&&first!=""&&end!="") {
+            layer.msg('耗时过长确定导出吗？',
+                {
+                    time: 0, //不自动关闭
+                    btn: ['确定', '取消'],
+                    yes: function(index) {
+                        layer.close(index);
+                        load = layer.load(1, { shade: [0.3, '#ccc'] });
+                        window.open("../ToExecel/ExportScanRate", 'top');
+                        layer.close(load);
+                    }
+                });
+        }
+        else {
+
+            layer.alert("参数有误！", { icon: 2 });
+          
+        } 
+    }
+    
+
+ 
+    //function ToExcel() {
+    //    layer.msg('你确定执行操作吗？', {
+    //        time: 0, //不自动关闭
+    //        btn: ['确定', '取消'],
+    //        yes: function (index) {
+    //            layer.close(index);
+    //            // load=
+    //                //layer.load(1, { shade: [0.3, '#ccc'] });
+                   
+    //                layer.alert('操作成功', { icon: 1 }, function () { window.location = window.location; });
+              
+    //        }
+    //    });
+    //}
+
+
+
+
+
+
+
+</script>
+<script>
+
+    $(function () {
+        $("#line").val(GetQueryString("Line"));
+        $("#Starttime").val(GetQueryString("StartTime"));
+        $("#Endtime").val(GetQueryString("EndTime"));
+    });
+</script>
+
+
+
+<body style="background:#fff;height: 100%">
+
+    <ul class="breadcrumb" style="border-radius:1px; background:#ffffff;bmoz-box-shadow:2px 2px 5px #333333 ; webkit-box-shadow:2px 2px 5px #333333; box-shadow:2px 2px 5px #333333; white-space:nowrap;text-overflow:ellipsis; ">
+        <li><span class="primary-font"><i class="icon-home"></i></span><a href="/Home/Index" style="color:#333333">首页</a></li>
+        <li style="color: #333333">扫描率</li>
+
+    </ul>
+
+    <div class="search d1" style="background:#ffffff;float: left;bmoz-box-shadow:2px 2px 5px #333333 ; webkit-box-shadow:2px 2px 5px #333333; box-shadow:2px 2px 5px #333333; overflow:hidden;white-space:nowrap;text-overflow:ellipsis; width: 100%; ">
+
+
+        &nbsp;&nbsp;     <font face=宋体 color=#333333> 时间</font>&nbsp;
+        <input type="text" id="starttime" name="coded" placeholder="请选择开始时间..." size="10" style="width: 16%; height: 30px;" OnClick="WdatePicker({ dateFmt: 'yyyy-MM-dd' })"  readonly="true"  class="datepicker" />
+        &nbsp;&nbsp;     <font face=宋体 color=#333333>  至</font>&nbsp;&nbsp;
+        <input type="text" id="endtime" name="code" placeholder="请选择结束时间..." size="10" style="width: 16%; height: 30px;" OnClick="WdatePicker({ dateFmt: 'yyyy-MM-dd' })"  readonly="true" class="datepicker" />
+
+        &nbsp;&nbsp; <font face=宋体 color=#333333> 线体</font>&nbsp;
+        <select type="text" id="line" name="code" placeholder="请选择线体..." style="width: 16%; height: 30px;
+    font-size:13px;
+    padding-left: 10px;
+    border: 2px solid #7BA7AB;
+    border-radius: 5px;
+    outline: none;
+    background: #F9F0DA;
+    color: #9E9C9C;" , readonly="true">
+
+            <option value="1" hidden size="5"> 请选择线体...</option>
+            @foreach (var item in ViewBag.Line as List<AreaDto>)
+            {
+                <option value="@item.Area">@item.DesCribe</option>
+            }
+        </select>
+
+        <br>
+        <br>
+        &nbsp;&nbsp;   &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;  <input id="submit" type="button" style="border: none;  background:red;width: 9%; height: 28px; color: #ffffff" value="查询" onclick="danji()" />
+        &nbsp;&nbsp;   <input id="submit" type="button" style="border: none;  background:dodgerblue;width: 9%; height: 28px; color: #ffffff" value="导出" onclick="ToExcel()" />
+        @*<div class="select" style="text-align:center; text-align-last: center; height:30px; width: 8%;text-align-last:center;   background:dodgerblue;">
+
+                @*<input name="cars" id="ExPd" style="color: #ffffff; text-align: center; text-align-last: center;  background: dodgerblue; padding: 0; line-height: 28px;  " onclick="" />
+
+            </div>*@
+    </div>
+    <div style="height: 1%;width: 100%">.</div>
+
+    <div style="float: left; width: 100%;background: #ffffff">
+        <table @*class="tftable"*@ class="table table-striped" id="table1" style="border:none;">
+
+            @{
+                var list = ViewBag.Data as List<ResScnRateDto>;
+            }
+            <tr style="background: aliceblue">
+                <th style="text-align:center;" width="150">列数      </th>
+                <th style="text-align:center;" width="150">上线图号  </th>
+                <th style="text-align:center;" width="150">上线总数  </th>
+                <th style="text-align:center; " width="150">上线工位 </th>
+                <th style="text-align:center;" width="150">下线总数  </th>
+                <th style="text-align:center;" width="150">下线工位  </th>
+                <th style="text-align:center;" width="200">车型      </th>
+                <th style="text-align:center;" width="200">部件名称  </th>
+                <th style="text-align:center;" width="200">部件总数  </th>
+                <th style="text-align:center;" width="200">部件图号  </th>
+                <th style="text-align:center;" width="200">上线扫描率</th>
+                <th style="text-align:center;" width="200">部件扫描率</th>
+            </tr>
+            <tbody id="table2">
+                @if (list != null)
+                {
+                    var i = 1;
+
+                    foreach (var item in list)
+                    {
+
+                <tr>
+                    <td align="center"> @i </td>
+                    <td align="center"> @item.Figure_No_down </td>
+                    <td align="center"> @item.sum_up </td>
+                    <td align="center"> @item.upstation </td>
+                    <td align="center"> @item.sum_down </td>
+                    <td align="center"> @item.DOWNSTATION </td>
+                    <td align="center"> @item.cartype </td>
+                    <td align="center"> @item.Partname </td>
+                    <td align="center"> @item.Part_Sum </td>
+                    <td align="center"> @item.PartFigureNo </td>
+                    <td align="center"> @item.DOWNRATE </td>
+                    <td align="center"> @item.Rate </td>
+                </tr>
+                        i++;
+                    }
+
+                }
+                else
+                {
+                    for (int i = 0; i < 12; i++)
+                    {
+                <tr>
+                    <td style="height: 40px"></td>
+                    <td style="height: 20px"></td>
+                    <td style="height: 20px"></td>
+                    <td style="height: 20px"></td>
+                    <td style="height: 20px"></td>
+                    <td style="height: 20px"></td>
+                    <td style="height: 20px"></td>
+                    <td style="height: 20px"></td>
+                    <td style="height: 20px"></td>
+                    <td style="height: 20px"></td>
+                    <td style="height: 20px"></td>
+                    <td style="height: 20px"></td>
+                </tr>
+                    }
+                }
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+    <div style="height: 30%; width: 100%;"><br />.</div>
+    <br>
+    <div class="zxf_pagediv"></div>
+
+</body>
+
+<script src="~/Scripts/zxf_page.js"></script>
+
+<script type="text/javascript">
+    @{
+        int count = Convert.ToInt32(ViewBag.count);
+        if (ViewBag.count != null)
+        {
+
+            if (count != 0)
+            {
+                if (count % 30 == 0)
+                {
+                    count = count / 30;
+                }
+                else
+                {
+                    count = count/30 + 1;
+
+                }
+            }
+        }
+
+
+
+    }
+    function GetQueryString(name)
+    {
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+   
+    //function danji() {
+    //    var first = $("#starttime").val();
+    //    var end = $("#endtime").val();
+    //    var line = $("#line").val();
+    //    if (first === "" ||
+    //        first === null ||
+    //        first === undefined ||
+    //        end === "" ||
+    //        end === null ||
+    //        end === undefined ||
+    //        line === null ||
+    //        line === undefined) {
+    //        alert("请输入正确的时间或生产线！");
+    //        return false; /*阻止表单提交*/
+    //    } else {
+    //        window.location.href = "../ScanRate/Index?Line=" +
+    //            $("#line").val() +
+    //            "&&StartTime=" +
+    //            $("#starttime").val() +
+    //            "&&EndTime=" +
+    //            $("#endtime").val();
+
+
+    //    }
+    //}
+
+
+    function danji() {
+        var first = $("#starttime").val();
+        var end = $("#endtime").val();
+        var line = $("#line").val();
+        if (first < end && line != null && first != undefined && end != undefined&&first!=""&&end!="") {
+            window.location.href = "../ScanRate/Index?Line=" +
+                $("#line").val() +
+                "&&StartTime=" +
+                $("#starttime").val() +
+                "&&EndTime=" +
+                $("#endtime").val();
+
+        } else {
+            layer.alert("参数有误！", { icon: 2 });
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    $(".zxf_pagediv").createPage({
+
+        pageNum:@count,
+        current: 1,
+        backfun: function (e) {
+
+            //alert(pageNum);
+
+            $.ajax({
+                url: "../ScanRate/Index?PageIndex=" + e.current,
+                type: "Get",
+                success: function (res) {
+                    $("#table2").html("");
+
+                    $.each(res.List,
+                        function (n, value) {
+                            n = n + 1;
+                            var str = "<tr>";
+                            str += "<td align='center'>" + n + "</td>";
+                            str += "<td align='center'>" + value.Figure_No_down + "</td>";
+                            str += "<td align='center'>" + value.sum_up + "</td>";
+                            str += "<td align='center'>" + value.upstation+ "</td>";
+                            str += "<td align='center'>" + value.sum_down + "</td>";
+                            str += "<td align='center'>" + value.DOWNSTATION + "</td>";
+                            str += "<td align='center'>" + value.cartype + "</td>";
+                            str += "<td align='center'>" + value.Partname + "</td>";
+                            str += "<td align='center'>" + value.Part_Sum + "</td>";
+                            str += "<td align='center'>" + value.PartFigureNo + "</td>";
+                            str += "<td align='center'>" + value.DOWNRATE + "</td>";
+                            
+                            str += "<td align='center'>" + value.Rate + "</td>";
+                            $("#table2").append(str);
+                        });
+                }
+            });
+
+        }
+    });
+</script>
+<script type="text/javascript" src="~/Scripts/page.js"></script>

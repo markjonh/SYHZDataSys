@@ -1,0 +1,157 @@
+﻿@model WebApplication1.Model.ByDataModel
+@using WebApplication1.Model.Dto
+
+<head>
+    <link href="~/Content/ControlParts.css" rel="stylesheet" type="text/css" />
+    <script src="~/My97DatePicker/WdatePicker.js"></script>
+    @*<style>
+            #leftdiv { float: left; width: 30%}
+            #middlediv { width: 40%}
+            #rightdiv { float: right; width: 30%;}
+        </style>*@
+    
+
+</head>
+
+
+<script type="text/javascript">
+ 
+    function ToExcel() {
+
+        alert($('#ExPd option:selected').val());
+
+        if ($('#ExPd option:selected').val() === "ToExcelPart") {
+
+            window.location.href = "../ToExecel/TorqPartToExcelAll?type=Part";
+        }
+        if ($('#ExPd  option:selected').val() === "ToExcelTorq") {
+            window.location.href ="../ToExecel/TorqPartToExcelAll?type=Torq";
+        }
+    }
+</script>
+@{
+    Dictionary<string,string> dic=new Dictionary<string, string>();
+    dic.Add("RearAngle_BEV", "BEV后角");
+    dic.Add("RearAxle", "后桥-四线并两线");
+    dic.Add("RearAxle_BEV", "BEV后桥");
+    dic.Add("SubFram", "副车架-四线并两线");
+    dic.Add("Suspension_Lavida", "前悬 Lavida");
+    dic.Add("Suspension_PQ24", "前悬 PQ24(A0) ");
+    string title = dic[ViewBag.title.ToString()];
+}
+
+
+<h2>查询 @title 下部件</h2>
+<div style="height: 5%;width: 100%">.</div>
+@using (Ajax.BeginForm("ByDataPary", null, new AjaxOptions { HttpMethod = "Get", OnSuccess = "OnSuccess" }, new { @class = "form-horizontal no-margin form-border" }))
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+   
+        时间：
+        @Html.TextBoxFor(model => model.StartDateTime, new { OnClick = "WdatePicker({dateFmt:'yyyy-MM-dd'})", @readonly = "true", @class = "datepicker" })
+            @Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
+    
+        至
+   
+            @Html.TextBoxFor(model => model.EndDateTime, new { OnClick = "WdatePicker({dateFmt:'yyyy-MM-dd'})", @readonly = "true", @class = "datepicker" })
+            @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
+   
+   工位：
+            @Html.DropDownListFor(model => model.Station, (List<SelectListItem>)ViewBag.opxxSelect, new { @style = "width:180px;height:34px;margin-top:5px;border:1px solid #cccccc;" })
+            @Html.ValidationMessageFor(model => model.Station, "", new { @class = "text-danger" })
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <input type="submit" value="查询" class="btn btn-default" />
+        </div>
+    </div>
+
+  
+    <div class="form-group">
+       
+        <br>
+  
+
+        <h5 align="right">
+            导出数据：
+            <select style="width: 100px" id="ExPd" onchange="ToExcel()">
+                <option value="">请选择</option>
+                <option value="ToExcelPart">导出部件</option>
+                <option value="ToExcelTorq">导出扭矩</option>
+
+            </select>
+        </h5>
+
+    </div>
+
+}
+
+
+<style type="text/css">
+    /*div {
+        border-radius: 5px;
+        border: 1px;
+        padding: 10px;
+    }*/
+</style>
+
+<div style="width: 100%;margin:auto;height:500px;overflow-y: auto; background:#ede8e8" id="test">
+    <table class="ui-table" style="width: 100%;margin:auto" rules="all">
+
+        <tr class="ui-trcoloreven">
+            <td>列数</td>
+            <td>开始日期</td>
+            <td>总成条码</td>
+            <td>站点</td>
+            <td>部件条码</td>
+            <td>扫描状态</td>
+            <td>查询</td>
+        </tr>
+
+        @if (ViewBag.table != null && ViewBag.table.Count > 0)
+        {
+            var i = 0;
+
+            <tr>
+                @foreach (var item in ViewBag.table as List<ByDataDto>)
+                {
+                    i++;
+                    if (i % 2 == 0)
+                    {
+                        <tr style="background: #ede8e8">
+                            <td>@i</td>
+                            <td>@item.ProdDateTime</td>
+                            <td>@item.BarCode_zc</td>
+                            <td>@item.Station</td>
+                            <td>@item.BarCode_part</td>
+                            <td>@item.ScanStatus</td>
+                            <td>@Html.ActionLink("部件&扭矩查询", "Index", "AssemblyDetail", new {BarcodeStr = item.BarCode_zc}, new {target = "_blank"})</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr style="background: cornsilk">
+                            <td>@i</td>
+                            <td>@item.ProdDateTime</td>
+                            <td>@item.BarCode_zc</td>
+                            <td>@item.Station</td>
+                            <td>@item.BarCode_part</td>
+                            <td>@item.ScanStatus</td>
+                            <td>@Html.ActionLink("部件&扭矩查询", "Index", "AssemblyDetail", new {BarcodeStr = item.BarCode_zc}, new {target = "_blank"})</td> 
+                        </tr> 
+                      
+                    }
+                }
+                </tr>
+            }
+
+    </table>
+
+</div>
+<div class="form-group">
+
+    <div class="control-label col-md-2">
+        共计： @Html.Encode(ViewBag.count) 条数据
+    </div>
+</div>

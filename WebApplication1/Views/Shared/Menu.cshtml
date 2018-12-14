@@ -1,0 +1,197 @@
+﻿<aside class="sidebar-menu fixed">
+    <div class="sidebar-inner scrollable-sidebar">
+        <div class="main-menu">
+            <ul class="accordion">
+                <li class="menu-header">Main Menu							</li>
+                <li class="bg-palette1" id="m_home">
+                    <a href="/Home/Index">
+                        <span class="menu-content block">
+                            <span class="menu-icon"><i class="block fa fa-home fa-lg"></i></span>
+                            <span class="text m-left-sm"><font size="3">首页</font></span>
+                        </span>
+                        <span class="menu-content-hover block"><font size="3">首页</font></span>
+                    </a>
+                </li>
+
+                @*<li class="bg-palette2" id="m_order">
+            <a href="/Order/Index">
+                <span class="menu-content block">
+                    <span class="menu-icon"><i class="block fa fa-file-text-o fa-lg"></i></span>
+                    <span class="text m-left-sm">订单管理</span>
+                </span>
+                <span class="menu-content-hover block">订单管理</span>
+            </a>
+        </li>*@
+
+                <li class="openable bg-palette3">
+                    <a href="#">
+                        <span class="menu-content block">
+                            <span class="menu-icon"><i class="block fa fa-file-text-o fa-lg"></i></span>
+                            <span class="text m-left-sm"><font size="3">正向查询</font></span>
+                            <span class="submenu-icon"></span>
+                        </span>
+                        <span class="menu-content-hover block">
+                            <font size="3">正向</font>
+                        </span>
+                    </a>
+                    <ul class="submenu" style="display:none;">
+                        <li id="m_staArea"><a href="/AssemblySearch/Index"><span class="submenu-label"> <font size="3"> 总成查询</font></span></a></li>
+                        <li id="m_staPType"><a href="/AssemblySearch/DarkSearch"><span class="submenu-label"><font size="3"> 模糊查询</font></span></a></li>
+                        @*<li id="m_staPType"><a href="/AssemblySearch/DataSource"><span class="submenu-label"><font size="3"> 精确查询</font></span></a></li>*@
+
+
+                    </ul>
+                </li>
+
+                <li class="bg-palette4" id="m_seller">
+                    <a href="/InverseQuery/Index">
+                        <span class="menu-content block">
+                            <span class="menu-icon"><i class="block fa fa-user-secret fa-lg"></i></span>
+                            <span class="text m-left-sm"><font size="3"> 逆向查询</font></span>
+                        </span>
+                        <span class="menu-content-hover block"><font size="3"> 逆向</font></span>
+                    </a>
+                </li>
+             
+                @*<li class="bg-palette4" id="m_seller">
+                    <a href="/GetPartByDate/Index">
+                        <span class="menu-content block">
+                            <span class="menu-icon"><i class="block fa fa-file-text-o fa-lg"></i></span>
+                            <span class="text m-left-sm"><font size="3"> 零件查询</font></span>
+                        </span>
+                        <span class="menu-content-hover block"><font size="3"> 零件</font></span>
+                    </a>
+                </li>*@
+
+
+
+                <li class="bg-palette1" id="m_press">
+                    <a href="/QCSelect/Index">
+                        <span class="menu-content block">
+                            <span class="menu-icon"><i class="block fa fa-envelope-o fa-lg"></i></span>
+                            <span class="text m-left-sm"><font size="3"> QC查询</font></span>
+                        </span>
+                        <span class="menu-content-hover block"><font size="3"> Q C</font></span>
+                    </a>
+                </li>
+
+                @*<li class="bg-palette2" id="m_product">
+            <a href="/ChartShow/Index">
+
+                <span class="menu-content block">
+
+                    <span class="menu-icon"><i class="block fa fa-line-chart fa-lg"></i></span>
+                    <span class="text m-left-sm"><font size="3"> 图表查询</font></span>
+                </span>
+                <span class="menu-content-hover block"><font size="3"> 图表</font></span>
+            </a>
+
+        </li>*@
+
+
+                <li class="openable bg-palette3">
+                    <a href="#">
+                        <span class="menu-content block">
+                            <span class="menu-icon"><i class="block fa fa-line-chart fa-lg"></i></span>
+                            <span class="text m-left-sm"><font size="3">图表查询</font></span>
+                            <span class="submenu-icon"></span>
+                        </span>
+                        <span class="menu-content-hover block">
+                            <font size="3">图表</font>
+                        </span>
+                    </a>
+                    <ul class="submenu" style="display:none;">
+                        <li id="m_staArea"><a href="/ChartShow/Index"><span class="submenu-label"> <font size="3">产量节拍</font></span></a></li>
+                        @*<li id="m_staPType"><a href="/ThroughRate/Index"><span class="submenu-label"><font size="3">直通率</font></span></a></li>*@
+
+
+
+                    </ul>
+                </li>
+
+                @*<li class="bg-palette1" id="m_press">
+                    <a href="/ScanRate/Index">
+                        <span class="menu-content block">
+                            <span class="menu-icon"><i class="block fa fa-envelope-o fa-lg"></i></span>
+                            <span class="text m-left-sm"><font size="3"> 扫描率</font></span>
+                        </span>
+                        <span class="menu-content-hover block"><font size="3"> 扫描</font></span>
+                    </a>
+                </li>*@
+
+
+
+
+
+
+                @*<li class="bg-palette1" id="m_press">
+                    <a href="/NeedDeleyCar/Index">
+                        <span class="menu-content block">
+                            <span class="menu-icon"><i class="block fa fa-user-secret fa-lg"></i></span>
+                            <span class="text m-left-sm"><font size="3"> 需求押车</font></span>
+                        </span>
+                        <span class="menu-content-hover block"><font size="3"> 扫描</font></span>
+                    </a>
+                </li>*@
+
+
+
+                @*<li class="openable bg-palette3">
+                    <a href="#">
+                        <span class="menu-content block">
+                            <span class="menu-icon"><i class="block fa fa-user-secret fa-lg"></i></span>
+                            <span class="text m-left-sm"><font size="3">用户管理</font></span>
+                            <span class="submenu-icon"></span>
+                        </span>
+                        <span class="menu-content-hover block">
+                            <font size="3">用户</font>
+                        </span>
+                    </a>
+                    <ul class="submenu" style="display:none;">
+                        <li id="m_staArea"><a href="/AssemblySearch/Index"><span class="submenu-label"> <font size="3"> 查看用户</font></span></a></li>
+                        <li id="m_staPType"><a href="/AssemblySearch/DarkSearch"><span class="submenu-label"><font size="3"> 编辑用户</font></span></a></li>
+
+
+
+                    </ul>
+                </li>*@
+
+                @*<li class="bg-palette3" id="m_productImport">
+            <a href="/Product/Import">
+                <span class="menu-content block">
+                    <span class="menu-icon"><i class="block fa fa-plus-square fa-lg"></i></span>
+                    <span class="text m-left-sm">产品导入</span>
+                </span>
+                <span class="menu-content-hover block">产品导入</span>
+            </a>
+
+        </li>
+
+        <li class="bg-palette4" id="m_ptype">
+            <a href="/ProductType/Index">
+                <span class="menu-content block">
+                    <span class="menu-icon"><i class="block fa fa-tag fa-lg"></i></span>
+                    <span class="text m-left-sm">产品类型设置</span>
+                </span>
+                <span class="menu-content-hover block">产品类型设置</span>
+            </a>
+
+        </li>
+
+        <li class="bg-palette4" id="m_sellerarea">
+            <a href="/SellerArea/Index">
+                <span class="menu-content block">
+                    <span class="menu-icon"><i class="block fa fa-map-marker fa-lg"></i></span>
+                    <span class="text m-left-sm">地区设置</span>
+                </span>
+                <span class="menu-content-hover block">地区设置</span>
+            </a>
+
+        </li>*@
+
+            </ul>
+        </div>
+
+    </div>
+    <!-- sidebar-inner -->
+</aside>

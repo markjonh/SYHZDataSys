@@ -1,0 +1,241 @@
+﻿@using WebApplication1.Model.Dto
+<script>
+
+
+    var load;
+    function ToExcel() {
+        layer.msg('你确定执行操作吗？', {
+            time: 0, //不自动关闭
+            btn: ['确定', '取消'],
+            yes: function (index) {
+                layer.close(index);
+               // load=
+                if ($('select option:selected').val() === "ToPdf") {
+                    //Do();
+                    window.open('../SelectInfoNew/DownloadPdf' + window.location.search);
+                    layer.load(1, { shade: [0.3, '#ccc'] });
+                    layer.alert('操作成功', { icon: 1 }, function () { window.location = window.location; });
+                }
+                if ($('select option:selected').val() === "ToExcelPart") {
+                   // Do1();
+                     window.location.href = 'ToExecel/TorqPartToExcel' + window.location.search + "&&type=Part";
+                    layer.alert('操作成功', { icon: 1 }, function () { window.location = window.location; });
+                }
+                if ($('select option:selected').val() === "ToExcelTorq") {
+                    window.location.href = 'ToExecel/TorqPartToExcel' + window.location.search + "&&type=Torq";   
+                    layer.alert('操作成功', { icon: 1 }, function () { window.location = window.location; });
+                }
+            
+               
+            }
+        });
+    }
+</script>
+
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/css/selectFilter.css" rel="stylesheet" />
+<script src="~/Scripts/selectFilter.js"></script>
+@*@{
+        string title = "未知线体";
+        Dictionary<string, string> dic = new Dictionary<string, string>();
+        dic.Add("RearAngle_BEV", "BEV后角");
+        dic.Add("RearAxle", "后桥-四线并两线");
+        dic.Add("RearAxle_BEV", "BEV后桥");
+        dic.Add("SubFram", "副车架-四线并两线");
+        dic.Add("Suspension_Lavida", "前悬 Lavida");
+        dic.Add("Suspension_PQ24", "前悬 PQ24(A0) ");
+        if (!string.IsNullOrEmpty(ViewBag.title.ToString()))
+        {
+            title = dic[ViewBag.title.ToString()];
+        }
+        //"Suspension_Lavida"
+
+        // string title = dic["Suspension_Lavida"];
+
+    }*@
+<div style="width: 100%;margin:auto;height:100px;" id="test">
+    <h2 align="center">@ViewBag.title 下部件扭矩详情</h2>
+    <h5 align="right">
+        导出数据：
+        <select style="width: 100px" id="ExPd" onchange="ToExcel()">
+            <option value="">请选择</option>
+            <option value="ToExcelPart">导出部件</option>
+            <option value="ToExcelTorq">导出扭矩</option>
+            <option value="ToPdf">电子流程卡</option>
+        </select>
+    </h5>
+</div>
+<div style="width: 100%;margin:auto;height:100%;overflow-y: auto; background:#ede8e8" id="test">
+    <div style="width: 100%;margin:auto;height:50%;overflow-y: auto; background:#ede8e8" id="test">
+        <table @*class="ui-table"*@ class="table table-striped" style="width: 100%;margin:auto" @*rules="all"*@>
+            <td align="center" style="background: green" colspan="10"><font color="aliceblue" size="3">扭 矩 信 息</font></td>
+            <tr class="ui-trcoloreven">
+                <td style="background: yellow ">列数</td>
+                <td style="background: yellow">开始日期</td>
+                <td style="background: yellow">总成条码</td>
+                <td style="background: yellow">扭矩编号</td>
+                <td style="background: yellow">扭矩名称</td>
+                <td style="background: yellow">车型</td>
+                <td style="background: yellow">扭矩</td>
+                <td style="background: yellow">角度</td>
+                <td style="background: yellow">工位</td>
+                <td style="background: yellow">扫描状态</td>
+            </tr>
+            @if (ViewBag.Part != null)
+            {
+                var i = 0;
+                <tr>
+                    @foreach (var item in ViewBag.Torq as List<ByCodeDto>)
+                    {
+                        i = i + 1;
+                        if (i % 2 == 0)
+                        {
+                        <tr style="background:#ede8e8">
+                            <td>@i</td>
+                            <td>@item.ProdDateTime</td>
+                            <td><pre style="border: none " contenteditable="true">@item.BarCode_zc.TrimStart()</pre></td>
+                            <td>@item.NutID</td>
+
+                            <td>@item.cartype@item.Nutname-@item.NutID</td>
+                            <td>@item.Cartype</td>
+                            <td>@item.Torque</td>
+                            <td>@item.Angle</td>
+                            <td>@item.Station</td>
+                            @if (item.ScanStatus == "1")
+                            {
+                                <td>ok</td>
+                            }
+                            else
+                            {
+                                <td>NG</td>
+                            }
+
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr style="background: cornsilk">
+                            <td>@i</td>
+                            <td>@item.ProdDateTime</td>
+                            <td><pre style=" background: cornsilk;border: none" contenteditable="true">@item.BarCode_zc.TrimStart()</pre></td>
+                            <td>@item.NutID</td>
+                            <td>@item.cartype@item.Nutname-@item.NutID</td>
+                            <td>@item.Cartype</td>
+                            <td>@item.Torque</td>
+                            <td>@item.Angle</td>
+                            <td>@item.Station</td>
+                            @if (item.ScanStatus == "1")
+                            {
+                                <td>ok</td>
+                            }
+                            else
+                            {
+                                <td>NG</td>
+                            }
+
+
+                        </tr>
+                    }
+                }
+                    </tr>
+                }
+
+        </table>
+    </div>
+    <div style="width: 100%; margin: auto; height:50%; overflow-y: auto; background: #ede8e8" id="test">
+
+
+        <table @*class="ui-table"*@  class="table table-striped" style="width: 100%; margin: auto" @*rules="all"*@>
+            <td align="center" style="background: green" colspan="10"><font color="aliceblue" size="3">部 件 信 息</font></td>
+            <tr class="ui-trcoloreven">
+                <td style="background: yellow">列数</td>
+                <td style="background: yellow">开始日期</td>
+                <td style="background: yellow">总成条码</td>
+                <td style="background: yellow">部件条码</td>
+                <td style="background: yellow">工位</td>
+                <td style="background: yellow">部件图号</td>
+                <td style="background: yellow">部件名称</td>
+                <td style="background: yellow">精追/批追</td>
+
+                <td style="background: yellow">车型</td>
+                <td style="background: yellow">状态</td>
+
+            </tr>
+
+            @if (ViewBag.Torq != null)
+            {
+
+                var i = 0;
+                <tr>
+                    @foreach (var item in ViewBag.Part as List<ByCodeDto>)
+                    {
+                        i = i + 1;
+                        if (i % 2 == 0)
+                        {
+
+                        <tr style="background:#ede8e8">
+                            <td>@i</td>
+                            <td>@item.ProdDateTime</td>
+
+                            <td> <pre style="border: none" contenteditable="true">@item.BarCode_zc.TrimStart()</pre></td>
+                            <td> <pre style="border: none" contenteditable="true">@item.Barcode_part.TrimStart()</pre></td>
+                            <td>@item.Station</td>
+                            <td>@item.Part_figure_no</td>
+                            <td>@item.PartName</td>    
+                            <td>@item.Part_Signs</td>
+                            @*@if (item.Part_Sign=="1")
+                            {
+                                <td>精追</td>
+                            }
+                            else if(item.Part_Sign == "2")
+                            {
+                                <td>批追</td>
+
+                            }
+                            else
+                            {
+                                <td>空+@item.Part_Sign</td>
+                            }*@
+
+
+                            <td>@item.cartype</td>
+                            <td>@item.ScanStatus</td>
+                            @*@ /*<td>@Html.ActionLink(item.BarCode, "DownloadPdf", new { BarcodeStr = item.BarCode.ToString(), Area = "fcj" })</td>*/*@
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr style="background: cornsilk">
+                            <td>@i</td>
+                            <td>@item.ProdDateTime</td>
+                            <td><pre style="border: none;background: cornsilk" contenteditable="true">@item.BarCode_zc.TrimStart()</pre></td>
+                            <td><pre style="border: none;background: cornsilk" contenteditable="true">@item.Barcode_part.TrimStart()</pre></td>
+                            <td>@item.Station</td>
+                            <td>@item.Part_figure_no</td>
+                            <td>@item.PartName</td>
+                            <td>@item.Part_Signs</td>
+                            @*@if (item.Part_Sign == "1")
+                            {
+                                <td>精追</td>
+                            }
+                            else
+                            {
+                                <td>批追</td>
+
+                            }*@
+
+                            <td>@item.cartype</td>
+                            <td>@item.ScanStatus</td>
+                            @*@ /*<td>@Html.ActionLink(item.BarCode, "DownloadPdf", new { BarcodeStr = item.BarCode.ToString(), Area = "fcj" })</td>*/*@
+                        </tr>
+                    }
+
+                }
+                    </tr>
+                }
+
+        </table>
+    </div>
+</div>
+
+

@@ -1,0 +1,65 @@
+﻿@model List<WebApplication1.Model.Dto.RolesDto>
+<script>
+    $(function () {
+        $("#m_role").addClass("active");
+        $("#m_role").parent().show();
+        $("#m_role").parent().parent().addClass("open");
+    });
+    var load;
+    function OnSuccess(r) {
+        layer.close(load);
+        if (r.Successed) {
+            layer.alert('操作成功', { icon: 1 }, function () { window.location = window.location; });
+        }
+        else {
+            layer.alert(r.Message, { icon: 2 });
+        }
+    }
+    function deleteitem(id) {
+        layer.msg('确定删除吗？', {
+            time: 0, //不自动关闭
+            btn: ['删除', '取消'],
+            yes: function (index) {
+                layer.close(index);
+                load = layer.load(1, { shade: [0.3, '#ccc'] });
+                var url = "/Roles/Delete";
+                $.ajax({ url: url, data: { id: id }, success: OnSuccess, type: "POST" });
+            }
+        });
+    }
+</script>
+<ul class="breadcrumb">
+    <li><span class="primary-font"><i class="icon-home"></i></span><a href="/Home/Index">首页</a></li>
+    <li>角色管理</li>
+</ul>
+
+<table class="table table-striped" id="dataTable">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>角色名称</th>
+            <th><a href="/Roles/Create" class="label label-info">新增</a></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 1;}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@i</td>
+                <td>@item.Name</td>
+                <td>
+                    <a href="/Roles/Edit/@item.Id">
+                        <i class="ion-edit"></i>
+                    </a>&nbsp;
+                    <a href="javascript:;" onclick="deleteitem('@item.Id')">
+                        <i class="ion-close"></i>
+                    </a>
+                </td>
+            </tr>
+            i++;
+        }
+
+    </tbody>
+</table>
+

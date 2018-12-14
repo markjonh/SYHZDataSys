@@ -1,0 +1,107 @@
+﻿<script>
+    $(function () {
+
+        $("#btn_cp").click(function () {
+            var oldp = $.trim($("#oldp").val());
+            if (oldp == "") {
+                layer.alert('原始密码不能为空.', { icon: 2 });
+                return;
+            }
+            var newp = $.trim($("#newp").val());
+            if (newp == "") {
+                layer.alert('新密码不能为空.', { icon: 2 });
+                return;
+            }
+            if (newp.length<6) {
+                layer.alert('密码最短为6位.', { icon: 2 });
+                return;
+            } if (newp==oldp) {
+                layer.alert('新密码不能和原密码一样.', { icon: 2 });
+                return;
+            }
+            var newp1 = $.trim($("#newp1").val());
+            if (newp1 == "") {
+                layer.alert('确认新密码.', { icon: 2 });
+                return;
+            }
+            if (newp1 != newp) {
+                layer.alert('两次新密码不一致.', { icon: 2 });
+                return;
+            }
+
+            load = layer.load(1, { shade: [0.3, '#ccc'] });
+            $("form:first").submit();
+        });
+    });
+    var load;
+    function OnSuccess(r) {
+        layer.close(load);
+        if (r.Successed) {
+            layer.alert('密码修改成功', { icon: 1 }, function () { window.location = window.location; });
+        }
+        else {
+            layer.alert(r.Message, { icon: 2 });
+        }
+    }
+</script>
+<ul class="breadcrumb">
+    <li><span class="primary-font"><i class="icon-home"></i></span><a href="/Home/Index">首页</a></li>
+    <li>修改密码</li>
+</ul>
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        修改密码
+        <span class="smart-widget-option">
+            <span class="refresh-icon-animated">
+                <i class="fa fa-circle-o-notch fa-spin"></i>
+            </span>
+            <a href="#" class="widget-collapse-option" data-toggle="collapse">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+        </span>
+    </div>
+    <div class="smart-widget-inner">
+
+        <div class="smart-widget-body">
+            @using (Ajax.BeginForm("Index", null, new AjaxOptions { HttpMethod = "Post", OnSuccess = "OnSuccess" }, new { @class = "form-horizontal no-margin form-border" }))
+            {
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">原始密码：</label>
+                    <div class="col-lg-10">
+                        <input type="password" maxlength="50" class="form-control" placeholder="请输入原始密码" id="oldp" name="oldp">
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">新的密码：</label>
+                    <div class="col-lg-10">
+                        <input type="password" maxlength="50" class="form-control" placeholder="请输入新的密码" id="newp" name="newp">
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">确认新密码：</label>
+                    <div class="col-lg-10">
+                        <input type="password" maxlength="50" class="form-control" placeholder="确认新密码" id="newp1" name="newp1">
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <button type="button" class="btn btn-danger" data-toggle="modal" id="btn_cp">修改密码</button>
+
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /form-group -->
+            }
+        </div>
+    </div>
+    <!-- ./smart-widget-inner -->
+</div>
+
